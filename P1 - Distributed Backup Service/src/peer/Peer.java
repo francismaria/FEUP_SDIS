@@ -32,7 +32,7 @@ public class Peer implements RMIinterface{
 			throw new InvalidArgumentsException("peer");
 		}
 		
-		//initRMIservice();
+		initRMIservice();
 		startListeningChannels();
 		
 		System.err.println("ok");
