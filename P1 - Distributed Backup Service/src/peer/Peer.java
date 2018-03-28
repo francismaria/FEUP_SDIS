@@ -32,7 +32,7 @@ public class Peer implements RMIinterface{
 			throw new InvalidArgumentsException("peer");
 		}
 		
-		initRMIservice();
+		//initRMIservice();
 		startListeningChannels();
 		
 		System.err.println("ok");
@@ -47,7 +47,7 @@ public class Peer implements RMIinterface{
 			int peerId = Integer.parseInt(args[1]);
 			remoteObjName = args[2];
 			
-			if(parseMCname(args[3]) && parseMDBname(args[4]) && parseMDRname(args[4])){
+			if(parseMCname(args[3]) && parseMDBname(args[4]) && parseMDRname(args[5])){
 				info = new PeerInfo(peerId);
 				return true;
 			}

@@ -13,28 +13,19 @@ public class TestApp {
 	private static String fileName;
 	private static int replicationDegree;
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws RemoteException, NotBoundException {
 		
 		if(!parseArguments(args)) return;
 		
 		File backupFile = new File(fileName);
 		
+		Registry registry = LocateRegistry.getRegistry(null);
 		
-		try {
-			Registry registry = LocateRegistry.getRegistry(null);
-			
-			RMIinterface stub = (RMIinterface) registry.lookup("MyServer");
-			
-			stub.backup(backupFile);
+		RMIinterface stub = (RMIinterface) registry.lookup("Server1");
+		
+		System.out.println(fileName);
+		stub.backup(backupFile);
 
-			
-		} catch (RemoteException e) {
-			
-			e.printStackTrace();
-		} catch (NotBoundException e) {
-			e.printStackTrace();
-		}
-		
 		
 	}
 	

@@ -8,6 +8,7 @@ public class MDBchannel extends ChannelInformation implements Runnable{
 		super(ipAddress, port);
 	}
 
+	@Override
 	public void run() {
 		System.out.println(getAddress() + "  " + getPort());
 		

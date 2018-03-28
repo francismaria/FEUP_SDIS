@@ -5,19 +5,19 @@ import java.net.UnknownHostException;
 
 public abstract class ChannelInformation {
 
-	private static int port;
-	private static InetAddress address = null;
+	private int port;
+	private InetAddress address = null;
 	
 	public ChannelInformation(String ipAddress, int port) throws UnknownHostException {
 		this.address = InetAddress.getByName(ipAddress);
 		this.port = port;
 	}
 	
-	public static InetAddress getAddress() {
+	public InetAddress getAddress() {
 		return address;
 	}
 	
-	public static int getPort() {
+	public int getPort() {
 		return port;
 	}
 }
