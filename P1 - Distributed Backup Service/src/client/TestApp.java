@@ -14,22 +14,38 @@ public class TestApp {
 	private static String command = null;
 	private static String remoteObjName = null;
 	private static int replicationDegree = 0;
+	private static RMIinterface stub = null;
 	
 	public static void main(String[] args) throws RemoteException, NotBoundException {
 		
 		if(!parseArguments(args)) return;
 		
-		File backupFile = new File(fileName);
-		
 		
 		Registry registry = LocateRegistry.getRegistry(null);
 		
-		RMIinterface stub = (RMIinterface) registry.lookup(remoteObjName);
+		/*RMIinterface */stub = (RMIinterface) registry.lookup(remoteObjName);
 		
-		System.out.println(fileName);
-		stub.backup(backupFile);
+		executeCommand();
+		
+		//stub.backup(backupFile);
+		
+	}
+	
+	public static void executeCommand() throws RemoteException {
+		
 
+		File backupFile = new File(fileName);
 		
+		switch(command) {
+		case "BACKUP":
+			stub.backup(backupFile);
+			break;
+		case "RESTORE":
+			//startRestore();
+			break;
+		default:
+			break;
+		}
 	}
 	
 	public static boolean parseArguments(String[] args) {
