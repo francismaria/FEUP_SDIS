@@ -14,14 +14,9 @@ public class MDBchannel extends ChannelInformation implements Runnable{
 		
 		boolean running = true;
 		
-		while(running) {/*
-			System.out.println("-------------- MDB");
-			try {
-				Thread.sleep(50);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}*/
+		while(running) {
+			
+			//listen to MDB channel
 			
 		}
 	}
