@@ -18,7 +18,6 @@ public class Peer implements RMIinterface{
 	private static PeerInfo info;
 	private static String remoteObjName;
 	
-	//é preciso ter os canais de forma a que estes estejam acessíveis ao backup, restore...
 	private static MCchannel communicationChannel = null;
 	private static MDBchannel backupChannel = null;
 	private static MDRchannel restoreChannel = null;
@@ -33,9 +32,8 @@ public class Peer implements RMIinterface{
 		}
 		
 		initRMIservice();
-		startListeningChannels();
 		
-		System.err.println("ok");
+		startListeningChannels();
 	
 	}
 	

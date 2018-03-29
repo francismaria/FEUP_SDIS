@@ -6,15 +6,15 @@ import java.net.UnknownHostException;
 public abstract class ChannelInformation {
 
 	private int port;
-	private InetAddress address = null;
+	private InetAddress groupAddress = null;
 	
 	public ChannelInformation(String ipAddress, int port) throws UnknownHostException {
-		this.address = InetAddress.getByName(ipAddress);
+		this.groupAddress = InetAddress.getByName(ipAddress);
 		this.port = port;
 	}
 	
-	public InetAddress getAddress() {
-		return address;
+	public InetAddress getGroupAddress() {
+		return groupAddress;
 	}
 	
 	public int getPort() {

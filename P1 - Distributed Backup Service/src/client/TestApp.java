@@ -22,12 +22,9 @@ public class TestApp {
 		
 		
 		Registry registry = LocateRegistry.getRegistry(null);
-		
-		/*RMIinterface */stub = (RMIinterface) registry.lookup(remoteObjName);
+		stub = (RMIinterface) registry.lookup(remoteObjName);
 		
 		executeCommand();
-		
-		//stub.backup(backupFile);
 		
 	}
 	
