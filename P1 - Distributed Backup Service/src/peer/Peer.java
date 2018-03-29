@@ -123,7 +123,7 @@ public class Peer implements RMIinterface{
 	@Override
 	public void backup(File file) throws RemoteException {
 		
-		(new Thread(new Backup(file))).start();
+		(new Thread(new Backup(file, backupChannel))).start();
 		
 	}
 
