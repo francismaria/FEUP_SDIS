@@ -47,18 +47,7 @@ public class MCchannel extends ChannelInformation implements Runnable{
 			
 			String receivedInfo = new String(packet.getData(), 0, packet.getLength());
 			System.out.println(receivedInfo);
-			
-			String response = "RESPONSE!";
-			buf = response.getBytes();
-			packet = new DatagramPacket(buf, buf.length, getGroupAddress(), getPort());
-			
-			try {
-				socket.send(packet);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
+		
 		}
 		
 		try {

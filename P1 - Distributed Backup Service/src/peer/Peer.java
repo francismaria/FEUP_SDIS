@@ -10,6 +10,7 @@ import java.rmi.server.UnicastRemoteObject;
 
 import communication.*;
 import exceptions.InvalidArgumentsException;
+import protocol.Backup;
 import rmi.RMIinterface;
 import structures.PeerInfo;
 
@@ -34,7 +35,6 @@ public class Peer implements RMIinterface{
 		initRMIservice();
 		
 		startListeningChannels();
-	
 	}
 	
 	public static boolean parseArguments(String[] args) {
@@ -123,7 +123,7 @@ public class Peer implements RMIinterface{
 	@Override
 	public void backup(File file) throws RemoteException {
 		
-		System.out.println("This is the backup program!\n" + file.getName());
+		(new Thread(new Backup(file))).start();
 		
 	}
 

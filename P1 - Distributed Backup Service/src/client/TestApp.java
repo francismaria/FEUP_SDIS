@@ -8,9 +8,11 @@ import java.rmi.registry.Registry;
 
 import rmi.RMIinterface;
 
+import exceptions.*;
+
 public class TestApp {
 	
-	private static String fileName = null;
+	private static File file = null;
 	private static String command = null;
 	private static String remoteObjName = null;
 	private static int replicationDegree = 0;
@@ -30,12 +32,9 @@ public class TestApp {
 	
 	public static void executeCommand() throws RemoteException {
 		
-
-		File backupFile = new File(fileName);
-		
 		switch(command) {
 		case "BACKUP":
-			stub.backup(backupFile);
+			stub.backup(file);
 			break;
 		case "RESTORE":
 			//startRestore();
@@ -46,8 +45,6 @@ public class TestApp {
 	}
 	
 	public static boolean parseArguments(String[] args) {
-		
-		//fazer check do service access point
 		
 		if(args[1].equals("BACKUP"))
 			return checkBackupArgs(args);
@@ -75,8 +72,22 @@ public class TestApp {
 			return false;
 		}
 		
-		if(matchesFileName(args[2])) {
+		file = new File(args[2]);
+		
+		if(file.exists() && !file.isDirectory()) {
 			remoteObjName = args[0];
+			command = args[1];
+			replicationDegree = Integer.parseInt(args[3]);
+			return true;
+		}
+		else {
+			System.out.println("Error in path");
+			//throw new FileNotFound(args[2]);
+			return false;
+		}
+		/*
+		if(matchesFileName(args[2])) {
+			remoteObjName = args[0]; 
 			command = args[1];
 			fileName = args[2];
 			replicationDegree = Integer.parseInt(args[3]);
@@ -85,7 +96,7 @@ public class TestApp {
 		else {
 			System.out.println("The filename specified is not valid.");
 			return false;
-		}
+		}*/
 	}
 	
 	public static boolean checkRestoreArgs(String[] args) {
@@ -99,7 +110,7 @@ public class TestApp {
 		if(matchesFileName(args[2])) {
 			remoteObjName = args[0];
 			command = args[1];
-			fileName = args[2];
+			//fileName = args[2];
 			return true;
 		}
 		else {
@@ -119,7 +130,7 @@ public class TestApp {
 		if(matchesFileName(args[2])) {
 			remoteObjName = args[0];
 			command = args[1];
-			fileName = args[2];
+			//fileName = args[2];
 			return true;
 		}
 		else {
