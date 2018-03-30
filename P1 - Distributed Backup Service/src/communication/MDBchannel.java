@@ -40,21 +40,34 @@ public class MDBchannel extends ChannelInformation implements Runnable{
 				socket.receive(packet);
 			} catch (IOException e) {
 				System.out.println("Unable to receive packet.");
+				continue;
 			}
 			
-			byte[] header = new byte[MAX_HEADER_SIZE];
+			byte[] headerBuf = new byte[MAX_HEADER_SIZE];
 			byte[] chunk = new byte[(int)MAX_CHUNK_SIZE];
 			
-			parseHeader(buf, header, chunk);
+			parseMessage(buf, headerBuf, chunk);
 			
-			String out = new String(header);
-			System.out.println(out + " CHUNK SIZE: " + chunk.length);		//Está certo??
+			String header = new String(headerBuf);
+			parseHeader(header);
+			
+			
+			System.out.println(header + " CHUNK SIZE: " + chunk.length);		//Está certo??
 		}
 		
 		
 	}
 	
-	public void parseHeader(byte[] message, byte[] header, byte[] body) {
+	public void parseHeader(String header) {
+		
+		String[] parsedHeader = header.split(" ");
+		
+		if(parsedHeader[0].equals("PUTCHUNK")) {
+			//if(Integer.parseInt(parsedHeader[2]) == ) peer.getId()  não aceita pois vem do mesmo peer
+		}
+	}
+	
+	public void parseMessage(byte[] message, byte[] header, byte[] body) {
 		
 		int headerLength = getHeaderLength(message);
 		int bodyLength = message.length - (int)MAX_HEADER_SIZE;
