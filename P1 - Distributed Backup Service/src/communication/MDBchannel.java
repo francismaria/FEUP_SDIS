@@ -64,7 +64,21 @@ public class MDBchannel extends ChannelInformation implements Runnable{
 		
 		if(parsedHeader[0].equals("PUTCHUNK")) {
 			//if(Integer.parseInt(parsedHeader[2]) == ) peer.getId()  não aceita pois vem do mesmo peer
+			acceptChunk();
 		}
+	}
+	
+	public void acceptChunk() {
+		
+		try {
+			MulticastSocket MCsocket = new MulticastSocket();
+		} catch (IOException e) {
+			System.out.println("Unable to create socket to MC channel");
+		}
+		
+		String s = "RESPONSE TO MDB CHANNEL";
+		byte[] buf = s.getBytes();
+		DatagramPacket packet = new DatagramPacket(buf, buf.length, communicationChannel)
 	}
 	
 	public void parseMessage(byte[] message, byte[] header, byte[] body) {
