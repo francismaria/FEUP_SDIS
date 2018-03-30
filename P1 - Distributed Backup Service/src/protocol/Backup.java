@@ -20,6 +20,8 @@ public class Backup extends Thread{
 	private int replicationDegree;
 	
 	private final static long MAX_CHUNK_SIZE = 64000;
+	private final static long MAX_MSG_SIZE = 65024;
+	private static final int MAX_HEADER_SIZE = 1024;
 	
 	private MCchannel communicationChannel = null;
 	private MDBchannel backupChannel = null;
@@ -84,7 +86,7 @@ public class Backup extends Thread{
 	
 	private byte[] createPUTCHUNK(byte[] body, int chunkNo) {
 		
-		byte[] message = new byte[1024 + (int)MAX_CHUNK_SIZE];
+		byte[] message = new byte[(int)MAX_MSG_SIZE];
 		
 		String headerString = "PUTCHUNK " + peer.getProtocolVersion() + " " + Integer.toString(peer.getId()) + 
 				" " + "FILE_ID" + " " + Integer.toString(chunkNo) + " " + Integer.toString(replicationDegree);
@@ -97,7 +99,7 @@ public class Backup extends Thread{
 		
 		System.arraycopy(header, 0, message, 0, header.length);
 		System.arraycopy(delimiters, 0, message, header.length, delimiters.length);
-		System.arraycopy(body, 0, message,header.length + delimiters.length, body.length);
+		System.arraycopy(body, 0, message,MAX_HEADER_SIZE/*header.length + delimiters.length*/, body.length);
 		
 		return message;
 	}

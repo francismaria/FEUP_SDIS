@@ -10,6 +10,11 @@ public class MDBchannel extends ChannelInformation implements Runnable{
 	
 	private static MulticastSocket socket;
 	
+	private final static int MAX_HEADER_SIZE = 1024;
+	private final static long MAX_CHUNK_SIZE = 64000;
+	
+	private final static long MAX_MSG_SIZE = 65024;
+	
 	public MDBchannel(String ipAddress, int port) throws UnknownHostException {
 		super(ipAddress, port);
 	}
@@ -28,7 +33,7 @@ public class MDBchannel extends ChannelInformation implements Runnable{
 		
 		while(running) {
 			
-			buf = new byte[70000];
+			buf = new byte[(int)MAX_MSG_SIZE];
 			packet = new DatagramPacket(buf, buf.length);
 			
 			try {
@@ -37,27 +42,32 @@ public class MDBchannel extends ChannelInformation implements Runnable{
 				System.out.println("Unable to receive packet.");
 			}
 			
-			parseHeader(buf);
+			byte[] header = new byte[MAX_HEADER_SIZE];
+			byte[] chunk = new byte[(int)MAX_CHUNK_SIZE];
+			
+			parseHeader(buf, header, chunk);
+			
+			String out = new String(header);
+			System.out.println(out + " CHUNK SIZE: " + chunk.length);		//Está certo??
 		}
 		
 		
 	}
 	
-	public void parseHeader(byte[] message) {
+	public void parseHeader(byte[] message, byte[] header, byte[] body) {
 		
 		int headerLength = getHeaderLength(message);
+		int bodyLength = message.length - (int)MAX_HEADER_SIZE;
+		
+		System.out.println(bodyLength);
 		
 		if(headerLength == 0) {
 			System.out.println("Couldn't find header(?).");
 			return;
 		}
 		
-		byte[] header = new byte[1024];
-		
 		System.arraycopy(message, 0, header, 0, headerLength);
-		
-		String out = new String(header);
-		System.out.println(out);
+		System.arraycopy(message, headerLength, body, 0, bodyLength);
 
 	}
 	
