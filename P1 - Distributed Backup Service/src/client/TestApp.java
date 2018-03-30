@@ -1,6 +1,9 @@
 package client;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -13,6 +16,9 @@ import exceptions.*;
 public class TestApp {
 	
 	private static File file = null;
+
+	private static byte[] fileBytes = null;
+	
 	private static String command = null;
 	private static String remoteObjName = null;
 	private static int replicationDegree = 0;
@@ -22,19 +28,17 @@ public class TestApp {
 		
 		if(!parseArguments(args)) return;
 		
-		
 		Registry registry = LocateRegistry.getRegistry(null);
 		stub = (RMIinterface) registry.lookup(remoteObjName);
 		
 		executeCommand();
-		
 	}
 	
 	public static void executeCommand() throws RemoteException {
 		
 		switch(command) {
 		case "BACKUP":
-			stub.backup(file);
+			stub.backup(file, replicationDegree);
 			break;
 		case "RESTORE":
 			//startRestore();
@@ -73,6 +77,12 @@ public class TestApp {
 		}
 		
 		file = new File(args[2]);
+		try {
+			fileBytes = Files.readAllBytes(file.toPath());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		if(file.exists() && !file.isDirectory()) {
 			remoteObjName = args[0];

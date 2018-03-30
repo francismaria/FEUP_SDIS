@@ -1,8 +1,6 @@
+/protocol/
 /client/
-/communication/
-/exceptions/
 /peer/
 /rmi/
 /structures/
-/Test.class
-/protocol/
+/communication/

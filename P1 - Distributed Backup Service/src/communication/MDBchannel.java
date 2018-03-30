@@ -28,7 +28,7 @@ public class MDBchannel extends ChannelInformation implements Runnable{
 		
 		while(running) {
 			
-			buf = new byte[2048];
+			buf = new byte[70000];
 			packet = new DatagramPacket(buf, buf.length);
 			
 			try {

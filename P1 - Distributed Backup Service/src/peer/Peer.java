@@ -46,7 +46,7 @@ public class Peer implements RMIinterface{
 			remoteObjName = args[2];
 			
 			if(parseMCname(args[3]) && parseMDBname(args[4]) && parseMDRname(args[5])){
-				info = new PeerInfo(peerId);
+				info = new PeerInfo(peerId, args[0]);
 				return true;
 			}
 		}
@@ -121,9 +121,9 @@ public class Peer implements RMIinterface{
 	}
 
 	@Override
-	public void backup(File file) throws RemoteException {
+	public void backup(File file, int replicationDegree) throws RemoteException {
 		
-		(new Thread(new Backup(file, backupChannel))).start();
+		(new Thread(new Backup(info, file, replicationDegree, communicationChannel, backupChannel))).start();
 		
 	}
 
