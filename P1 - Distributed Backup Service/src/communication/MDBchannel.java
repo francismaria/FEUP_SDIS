@@ -37,11 +37,44 @@ public class MDBchannel extends ChannelInformation implements Runnable{
 				System.out.println("Unable to receive packet.");
 			}
 			
-			String receivedInfo = new String(packet.getData(), 0, packet.getLength());
-			System.out.println(receivedInfo);
+			parseHeader(buf);
 		}
 		
 		
+	}
+	
+	public void parseHeader(byte[] message) {
+		
+		int headerLength = getHeaderLength(message);
+		
+		if(headerLength == 0) {
+			System.out.println("Couldn't find header(?).");
+			return;
+		}
+		
+		byte[] header = new byte[1024];
+		
+		System.arraycopy(message, 0, header, 0, headerLength);
+		
+		String out = new String(header);
+		System.out.println(out);
+
+	}
+	
+	public int getHeaderLength(byte[] message) {
+		
+		for(int i = 0; i < message.length; i++) {
+			if(message[i] == (byte)0xD) {
+				i++;
+				if(message[i] == (byte)0xA) {
+					return i+1;
+				}
+				else {
+					i--;
+				}
+			}
+		}
+		return 0;
 	}
 	
 	public static void joinChannel(InetAddress groupAddress, int port) {
