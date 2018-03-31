@@ -10,6 +10,15 @@ public class PutchunkMessage extends Message{
 	private int replicationDegree;
 	private byte[] body;
 	
+	public PutchunkMessage() {
+		
+		super();
+		
+		this.chunkNo = 0;
+		this.replicationDegree = 0;
+		this.body = null;
+	}
+	
 	public PutchunkMessage(String version, int senderID, String fileID, int chunkNo, int replicationDegree, byte[] body) {
 		
 		super("PUTCHUNK", version, senderID, fileID);
@@ -33,8 +42,53 @@ public class PutchunkMessage extends Message{
 		System.arraycopy(body, 0, message, MAX_HEADER_SIZE, body.length);
 	}
 	
+	public void parseMessageBytes(byte[] message) {
+		
+		this.message = message;
+		
+		parseMessage();
+
+
+	}
+	
+	private void parseMessage(){
+		
+		int headerLength = getHeaderLength(message);
+		int bodyLength = message.length - Message.MAX_HEADER_SIZE;
+		
+		if(headerLength == 0) {
+			System.out.println("Unable to read header.");
+			return;
+		}
+		
+		byte[] header = new byte[headerLength];
+		//byte[] header = new byte[MAX_HEADER_SIZE];
+		body = new byte[MAX_BODY_SIZE];
+		
+		System.arraycopy(message, 0, header, 0, headerLength);
+		System.arraycopy(message, headerLength, body, 0, bodyLength);
+		
+		String headerString = new String(header);
+		String[] parsedHeader = headerString.split(" +");
+		
+		setType(parsedHeader[0]);
+		setProtocolVersion(parsedHeader[1]);
+		setSenderId(Integer.parseInt(parsedHeader[2]));
+		setFileId(parsedHeader[3]);
+		chunkNo = Integer.parseInt(parsedHeader[4]);
+		replicationDegree = Integer.parseInt(parsedHeader[5].trim());
+	}
+
 	public byte[] getMessageBytes() {
 		return message;
+	}
+	
+	public int getChunkNo() {
+		return chunkNo;
+	}
+	
+	public int getReplicationDegree() {
+		return replicationDegree;
 	}
 	
 	

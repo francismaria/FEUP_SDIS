@@ -6,6 +6,7 @@ import java.net.InetAddress;
 import java.net.MulticastSocket;
 import java.net.UnknownHostException;
 
+import messages.PutchunkMessage;
 import structures.PeerInfo;
 
 public class MDBchannel extends ChannelInformation implements Runnable{
@@ -60,9 +61,6 @@ public class MDBchannel extends ChannelInformation implements Runnable{
 			if((parsedHeader = parseHeader(header)) != null) {
 				acceptChunk(parsedHeader);
 			}
-			
-			
-			System.out.println(header + " CHUNK SIZE: " + chunk.length);		//Está certo??
 		}
 		
 		MCchannelSocket.close();
@@ -108,19 +106,11 @@ public class MDBchannel extends ChannelInformation implements Runnable{
 	
 	public void parseMessage(byte[] message, byte[] header, byte[] body) {
 		
-		int headerLength = getHeaderLength(message);
-		int bodyLength = message.length - (int)MAX_HEADER_SIZE;
+		PutchunkMessage receivedMessage = new PutchunkMessage();
+		receivedMessage.parseMessageBytes(message);
 		
-		System.out.println(bodyLength);
-		
-		if(headerLength == 0) {
-			System.out.println("Couldn't find header(?).");
-			return;
-		}
-		
-		System.arraycopy(message, 0, header, 0, headerLength);
-		System.arraycopy(message, headerLength, body, 0, bodyLength);
-
+		System.out.println(receivedMessage.getType() + " " + receivedMessage.getProtocolVersion() + " "
+				+ "" + receivedMessage.getReplicationDegree());
 	}
 	
 	public int getHeaderLength(byte[] message) {

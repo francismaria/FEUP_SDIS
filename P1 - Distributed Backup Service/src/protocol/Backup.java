@@ -78,7 +78,7 @@ public class Backup extends Thread{
 				chunkNo, replicationDegree, body);
 		
 		byte[] message = messageInfo.getMessageBytes();
-		/*byte[] buf = info.getBytes();*/
+		
 		DatagramPacket packet = new DatagramPacket(message, message.length, backupChannel.getGroupAddress(), backupChannel.getPort());
 		
 		try {
