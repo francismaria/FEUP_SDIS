@@ -1,13 +1,13 @@
 package messages;
 
-public class StoredMessage extends Message {
+public class GetchunkMessage extends Message {
 
 	private int chunkNo;
 	private byte[] message = new byte[Message.MAX_HEADER_SIZE];
 	
-	public StoredMessage(String version, int senderID, String fileID, int chunkNo) {
+	public GetchunkMessage(String version, int senderID, String fileID, int chunkNo) {
 		
-		super("STORED", version, senderID, fileID);
+		super("GETCHUNK", version, senderID, fileID);
 		
 		this.chunkNo = chunkNo;
 		
@@ -16,10 +16,10 @@ public class StoredMessage extends Message {
 	
 	private void constructMessage() {
 		
-		String messageString = getType() + " " + getProtocolVersion() + " " + Integer.toString(getSenderId()) + " "
+		String headerString = getType() + " " + getProtocolVersion() + " " + Integer.toString(getSenderId()) + " "
 				+ "" + "FILE_ID" + " " + chunkNo;
 		
-		byte[] header = messageString.getBytes();
+		byte[] header = headerString.getBytes();
 		
 		System.arraycopy(header, 0, message, 0, header.length);
 		System.arraycopy(delimiters, 0, message, header.length, delimiters.length);
