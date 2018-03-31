@@ -8,11 +8,15 @@ public class PutchunkMessage extends Message{
 	
 	private int chunkNo;
 	private int replicationDegree;
+	private byte[] body;
 	
-	public PutchunkMessage(String version, int senderID, String fileID, int chunkNo, int replicationDegree) {
+	public PutchunkMessage(String version, int senderID, String fileID, int chunkNo, int replicationDegree, byte[] body) {
+		
 		super("PUTCHUNK", version, senderID, fileID);
+		
 		this.chunkNo = chunkNo;
 		this.replicationDegree = replicationDegree;
+		this.body = body;
 		
 		constructMessage();
 	}
@@ -20,13 +24,18 @@ public class PutchunkMessage extends Message{
 	private void constructMessage() {
 		
 		String messageString = getType() + " " + getProtocolVersion() + " " + Integer.toString(getSenderId()) + " "
-				+ "" + getFileId() + " " + Integer.toString(chunkNo) + Integer.toString(replicationDegree);
+				+ "" + getFileId() + " " + Integer.toString(chunkNo) + " " + Integer.toString(replicationDegree);
 		
 		byte[] header = messageString.getBytes();
 		
 		System.arraycopy(header, 0, message, 0, header.length);
-		
-		
+		System.arraycopy(delimiters, 0, message, header.length, delimiters.length);
+		System.arraycopy(body, 0, message, MAX_HEADER_SIZE, body.length);
 	}
+	
+	public byte[] getMessageBytes() {
+		return message;
+	}
+	
 	
 }

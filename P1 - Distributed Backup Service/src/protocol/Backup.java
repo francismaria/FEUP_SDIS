@@ -11,6 +11,7 @@ import java.util.ArrayList;
 
 import communication.MCchannel;
 import communication.MDBchannel;
+import messages.PutchunkMessage;
 import structures.PeerInfo;
 
 
@@ -72,8 +73,11 @@ public class Backup extends Thread{
 	
 	private void sendChunk(byte[] body, int chunkNo) {
 		
-		byte[] message = createPUTCHUNK(body, chunkNo); 
+		//byte[] message = createPUTCHUNK(body, chunkNo); 
+		PutchunkMessage messageInfo = new PutchunkMessage(peer.getProtocolVersion(), peer.getId(), "FILE_ID", 
+				chunkNo, replicationDegree, body);
 		
+		byte[] message = messageInfo.getMessageBytes();
 		/*byte[] buf = info.getBytes();*/
 		DatagramPacket packet = new DatagramPacket(message, message.length, backupChannel.getGroupAddress(), backupChannel.getPort());
 		
