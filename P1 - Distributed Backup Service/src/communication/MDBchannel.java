@@ -8,15 +8,18 @@ import java.net.UnknownHostException;
 
 public class MDBchannel extends ChannelInformation implements Runnable{
 	
-	private static MulticastSocket socket;
+	private MulticastSocket socket;
+	private MulticastSocket MCchannelSocket;
+	private MCchannel communicationChannel = null; 
 	
 	private final static int MAX_HEADER_SIZE = 1024;
 	private final static long MAX_CHUNK_SIZE = 64000;
 	
 	private final static long MAX_MSG_SIZE = 65024;
 	
-	public MDBchannel(String ipAddress, int port) throws UnknownHostException {
+	public MDBchannel(MCchannel communicationChannel, String ipAddress, int port) throws UnknownHostException {
 		super(ipAddress, port);
+		this.communicationChannel = communicationChannel;
 	}
 
 	@Override
@@ -28,6 +31,7 @@ public class MDBchannel extends ChannelInformation implements Runnable{
 		DatagramPacket packet;
 		
 		joinChannel(getGroupAddress(), getPort());
+		initCommunicationSocket();
 		
 		System.out.println("Connection Established: MDB CHANNEL");
 		
@@ -55,7 +59,18 @@ public class MDBchannel extends ChannelInformation implements Runnable{
 			System.out.println(header + " CHUNK SIZE: " + chunk.length);		//Está certo??
 		}
 		
+		MCchannelSocket.close();
+		socket.close();
+	}
+	
+	public void initCommunicationSocket() {
 		
+		try {	
+			MCchannelSocket = new MulticastSocket();
+		} catch (IOException e) {
+			System.out.println("Unable to create socket to MC channel");
+			return;
+		}
 	}
 	
 	public void parseHeader(String header) {
@@ -69,16 +84,17 @@ public class MDBchannel extends ChannelInformation implements Runnable{
 	}
 	
 	public void acceptChunk() {
-		
-		try {
-			MulticastSocket MCsocket = new MulticastSocket();
-		} catch (IOException e) {
-			System.out.println("Unable to create socket to MC channel");
-		}
-		
+
 		String s = "RESPONSE TO MDB CHANNEL";
 		byte[] buf = s.getBytes();
-		DatagramPacket packet = new DatagramPacket(buf, buf.length, communicationChannel)
+		DatagramPacket packet = new DatagramPacket(buf, buf.length, communicationChannel.getGroupAddress(), communicationChannel.getPort());
+		
+		try {
+			MCchannelSocket.send(packet);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public void parseMessage(byte[] message, byte[] header, byte[] body) {
@@ -114,7 +130,7 @@ public class MDBchannel extends ChannelInformation implements Runnable{
 		return 0;
 	}
 	
-	public static void joinChannel(InetAddress groupAddress, int port) {
+	public void joinChannel(InetAddress groupAddress, int port) {
 		
 		try {
 			socket = new MulticastSocket(port);

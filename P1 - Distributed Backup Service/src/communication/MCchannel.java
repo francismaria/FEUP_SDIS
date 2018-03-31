@@ -46,7 +46,7 @@ public class MCchannel extends ChannelInformation implements Runnable{
 			}
 			
 			String receivedInfo = new String(packet.getData(), 0, packet.getLength());
-			System.out.println(receivedInfo);
+			System.out.println(receivedInfo + "---- this is MC channel speaking");
 		
 		}
 		

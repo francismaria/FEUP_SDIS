@@ -74,7 +74,7 @@ public class Peer implements RMIinterface{
 		
 		int port = Integer.parseInt(channelInfo[1]);
 		try {
-			backupChannel = new MDBchannel(channelInfo[0], port);
+			backupChannel = new MDBchannel(communicationChannel, channelInfo[0], port);
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 			return false;
