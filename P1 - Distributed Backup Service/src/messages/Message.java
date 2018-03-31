@@ -35,4 +35,6 @@ public abstract class Message {
 	public String getFileId() {
 		return fileID;
 	}
+	
+	public abstract byte[] getMessageBytes();
 }
