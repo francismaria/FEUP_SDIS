@@ -7,13 +7,15 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
+import structures.PeerInfo;
+
 public class MCchannel extends ChannelInformation implements Runnable{
 	
 	private MulticastSocket socket;
 	private static List<Integer> confirmedPeers = new ArrayList<Integer>();
 	
-	public MCchannel(String ipAddress, int port) throws UnknownHostException {
-		super(ipAddress, port);
+	public MCchannel(PeerInfo peer, String ipAddress, int port) throws UnknownHostException {
+		super(peer, ipAddress, port);
 	}
 	
 	@Override

@@ -6,6 +6,8 @@ import java.net.InetAddress;
 import java.net.MulticastSocket;
 import java.net.UnknownHostException;
 
+import structures.PeerInfo;
+
 public class MDBchannel extends ChannelInformation implements Runnable{
 	
 	private MulticastSocket socket;
@@ -17,8 +19,8 @@ public class MDBchannel extends ChannelInformation implements Runnable{
 	
 	private final static long MAX_MSG_SIZE = 65024;
 	
-	public MDBchannel(MCchannel communicationChannel, String ipAddress, int port) throws UnknownHostException {
-		super(ipAddress, port);
+	public MDBchannel(MCchannel communicationChannel, PeerInfo peer, String ipAddress, int port) throws UnknownHostException {
+		super(peer, ipAddress, port);
 		this.communicationChannel = communicationChannel;
 	}
 
@@ -53,7 +55,11 @@ public class MDBchannel extends ChannelInformation implements Runnable{
 			parseMessage(buf, headerBuf, chunk);
 			
 			String header = new String(headerBuf);
-			parseHeader(header);
+			String[] parsedHeader = null;
+			
+			if((parsedHeader = parseHeader(header)) != null) {
+				acceptChunk(parsedHeader);
+			}
 			
 			
 			System.out.println(header + " CHUNK SIZE: " + chunk.length);		//Está certo??
@@ -73,21 +79,24 @@ public class MDBchannel extends ChannelInformation implements Runnable{
 		}
 	}
 	
-	public void parseHeader(String header) {
+	public String[] parseHeader(String header) {
 		
 		String[] parsedHeader = header.split(" ");
 		
 		if(parsedHeader[0].equals("PUTCHUNK")) {
 			//if(Integer.parseInt(parsedHeader[2]) == ) peer.getId()  não aceita pois vem do mesmo peer
-			acceptChunk();
+			//acceptChunk();
+			return parsedHeader;
 		}
+		return null;
 	}
 	
-	public void acceptChunk() {
-
-		String s = "RESPONSE TO MDB CHANNEL";
-		byte[] buf = s.getBytes();
-		DatagramPacket packet = new DatagramPacket(buf, buf.length, communicationChannel.getGroupAddress(), communicationChannel.getPort());
+	public void acceptChunk(String[] parsedHeader) {
+		
+		byte[] message = createSTORED(parsedHeader);
+		//String s = "RESPONSE TO MDB CHANNEL";
+		//byte[] buf = s.getBytes();
+		DatagramPacket packet = new DatagramPacket(message, message.length, communicationChannel.getGroupAddress(), communicationChannel.getPort());
 		
 		try {
 			MCchannelSocket.send(packet);
@@ -142,5 +151,14 @@ public class MDBchannel extends ChannelInformation implements Runnable{
 		}
 	}
 	
+	private byte[] createSTORED(String[] parsedHeader) {
+		
+		byte[] message = new byte[MAX_HEADER_SIZE];
+		
+		String headerString = "STORED " + Integer.toString(getPeer().getId()) + "FILE_ID " + parsedHeader[4];
+		
+		message = headerString.getBytes();
+		return message;
+	}
 	
 }

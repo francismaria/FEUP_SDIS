@@ -60,7 +60,7 @@ public class Peer implements RMIinterface{
 		
 		int port = Integer.parseInt(channelInfo[1]);
 		try {
-			restoreChannel = new MDRchannel(channelInfo[0], port);
+			restoreChannel = new MDRchannel(info, channelInfo[0], port);
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 			return false;
@@ -74,7 +74,7 @@ public class Peer implements RMIinterface{
 		
 		int port = Integer.parseInt(channelInfo[1]);
 		try {
-			backupChannel = new MDBchannel(communicationChannel, channelInfo[0], port);
+			backupChannel = new MDBchannel(communicationChannel, info, channelInfo[0], port);
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 			return false;
@@ -88,7 +88,7 @@ public class Peer implements RMIinterface{
 		
 		int port = Integer.parseInt(channelInfo[1]);
 		try {
-			communicationChannel = new MCchannel(channelInfo[0], port);
+			communicationChannel = new MCchannel(info, channelInfo[0], port);
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		}

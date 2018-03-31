@@ -6,12 +6,14 @@ import java.net.InetAddress;
 import java.net.MulticastSocket;
 import java.net.UnknownHostException;
 
+import structures.PeerInfo;
+
 public class MDRchannel extends ChannelInformation implements Runnable{
 	
 	private static MulticastSocket socket;
 	
-	public MDRchannel(String ipAddress, int port) throws UnknownHostException {
-		super(ipAddress, port);
+	public MDRchannel(PeerInfo peer, String ipAddress, int port) throws UnknownHostException {
+		super(peer, ipAddress, port);
 	}
 	
 	@Override
