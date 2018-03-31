@@ -1,15 +1,11 @@
 package messages;
 
-public class GetchunkMessage extends Message {
+public class DeleteMessage extends Message{
 
-	private int chunkNo;
 	private byte[] message = new byte[Message.MAX_HEADER_SIZE];
 	
-	public GetchunkMessage(String version, int senderID, String fileID, int chunkNo) {
-		
-		super("GETCHUNK", version, senderID, fileID);
-		
-		this.chunkNo = chunkNo;
+	public DeleteMessage(String version, int senderID, String fileID) {
+		super("DELETE", version, senderID, fileID);
 		
 		constructMessage();
 	}
@@ -17,7 +13,7 @@ public class GetchunkMessage extends Message {
 	private void constructMessage() {
 		
 		String headerString = getType() + " " + getProtocolVersion() + " " + Integer.toString(getSenderId()) + " "
-				+ "" + "FILE_ID" + " " + Integer.toString(chunkNo);
+				+ "" + getFileId();
 		
 		byte[] header = headerString.getBytes();
 		
@@ -28,5 +24,4 @@ public class GetchunkMessage extends Message {
 	public byte[] getMessageBytes() {
 		return message;
 	}
-	
 }

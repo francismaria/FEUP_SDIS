@@ -8,8 +8,16 @@ public abstract class Message {
 	private String fileID;
 	
 	protected final static int MAX_HEADER_SIZE = 1024;
+	protected final static int MAX_BODY_SIZE = 64000; 
 	
 	public byte[] delimiters = new byte[2];
+	
+	public Message() {
+		this.type = "";
+		this.senderID = 0;
+		this.version = "";
+		this.fileID = "";
+	}
 	
 	public Message(String type, String version, int senderID, String fileID) {
 		this.type = type;

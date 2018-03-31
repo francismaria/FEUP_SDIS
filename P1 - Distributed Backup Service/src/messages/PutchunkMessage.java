@@ -2,7 +2,7 @@ package messages;
 
 public class PutchunkMessage extends Message{
 
-	private final static long MAX_MSG_SIZE = Message.MAX_HEADER_SIZE + 64000;
+	private final static long MAX_MSG_SIZE = Message.MAX_HEADER_SIZE + Message.MAX_BODY_SIZE;
 	
 	private byte[] message = new byte[(int)MAX_MSG_SIZE];
 	
@@ -23,10 +23,10 @@ public class PutchunkMessage extends Message{
 	
 	private void constructMessage() {
 		
-		String messageString = getType() + " " + getProtocolVersion() + " " + Integer.toString(getSenderId()) + " "
+		String headerString = getType() + " " + getProtocolVersion() + " " + Integer.toString(getSenderId()) + " "
 				+ "" + getFileId() + " " + Integer.toString(chunkNo) + " " + Integer.toString(replicationDegree);
 		
-		byte[] header = messageString.getBytes();
+		byte[] header = headerString.getBytes();
 		
 		System.arraycopy(header, 0, message, 0, header.length);
 		System.arraycopy(delimiters, 0, message, header.length, delimiters.length);
