@@ -91,5 +91,8 @@ public class PutchunkMessage extends Message{
 		return replicationDegree;
 	}
 	
+	public byte[] getBody() {
+		return body;
+	}
 	
 }

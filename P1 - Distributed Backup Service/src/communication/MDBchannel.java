@@ -7,6 +7,7 @@ import java.net.MulticastSocket;
 import java.net.UnknownHostException;
 
 import messages.PutchunkMessage;
+import messages.StoredMessage;
 import structures.PeerInfo;
 
 public class MDBchannel extends ChannelInformation implements Runnable{
@@ -50,17 +51,8 @@ public class MDBchannel extends ChannelInformation implements Runnable{
 				continue;
 			}
 			
-			byte[] headerBuf = new byte[MAX_HEADER_SIZE];
-			byte[] chunk = new byte[(int)MAX_CHUNK_SIZE];
-			
-			parseMessage(buf, headerBuf, chunk);
-			
-			String header = new String(headerBuf);
-			String[] parsedHeader = null;
-			
-			if((parsedHeader = parseHeader(header)) != null) {
-				acceptChunk(parsedHeader);
-			}
+			parseMessage(buf);
+
 		}
 		
 		MCchannelSocket.close();
@@ -89,9 +81,9 @@ public class MDBchannel extends ChannelInformation implements Runnable{
 		return null;
 	}
 	
-	public void acceptChunk(String[] parsedHeader) {
+	/*public void acceptChunk(String[] parsedHeader) {
 		
-		byte[] message = createSTORED(parsedHeader);
+		//byte[] message = createSTORED(parsedHeader);
 		//String s = "RESPONSE TO MDB CHANNEL";
 		//byte[] buf = s.getBytes();
 		DatagramPacket packet = new DatagramPacket(message, message.length, communicationChannel.getGroupAddress(), communicationChannel.getPort());
@@ -102,17 +94,33 @@ public class MDBchannel extends ChannelInformation implements Runnable{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	}
+	}*/
 	
-	public void parseMessage(byte[] message, byte[] header, byte[] body) {
+	public void parseMessage(byte[] message) {
 		
 		PutchunkMessage receivedMessage = new PutchunkMessage();
+		
 		receivedMessage.parseMessageBytes(message);
 		
-		System.out.println(receivedMessage.getType() + " " + receivedMessage.getProtocolVersion() + " "
-				+ "" + receivedMessage.getReplicationDegree());
+		sendACK(receivedMessage.getProtocolVersion(),/*peer.getId(),*/ receivedMessage.getFileId(), receivedMessage.getChunkNo());
 	}
-	
+
+	public void sendACK(String protocolVersion, /*this peer ID,*/ String fileID, int chunkNo) {
+		
+		StoredMessage ackMessage = new StoredMessage(protocolVersion, 0, fileID, chunkNo);
+		byte[] message = ackMessage.getMessageBytes();
+		
+		DatagramPacket responsePacket = new DatagramPacket(message, message.length,
+				communicationChannel.getGroupAddress(), communicationChannel.getPort());
+		
+		try {
+			MCchannelSocket.send(responsePacket);
+		} catch (IOException e) {
+			System.out.println("Unable to send response socket to MC channel.\n");
+		}
+		
+	}
+	/*
 	public int getHeaderLength(byte[] message) {
 		
 		for(int i = 0; i < message.length; i++) {
@@ -128,7 +136,7 @@ public class MDBchannel extends ChannelInformation implements Runnable{
 		}
 		return 0;
 	}
-	
+	*/
 	public void joinChannel(InetAddress groupAddress, int port) {
 		
 		try {
@@ -140,15 +148,4 @@ public class MDBchannel extends ChannelInformation implements Runnable{
 			System.out.println("Unable to create a socket");
 		}
 	}
-	
-	private byte[] createSTORED(String[] parsedHeader) {
-		
-		byte[] message = new byte[MAX_HEADER_SIZE];
-		
-		String headerString = "STORED " + Integer.toString(getPeer().getId()) + "FILE_ID " + parsedHeader[4];
-		
-		message = headerString.getBytes();
-		return message;
-	}
-	
 }
