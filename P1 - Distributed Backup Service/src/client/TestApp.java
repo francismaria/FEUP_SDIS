@@ -41,7 +41,7 @@ public class TestApp {
 			stub.backup(file, replicationDegree);
 			break;
 		case "RESTORE":
-			//startRestore();
+			stub.restore(file);
 			break;
 		default:
 			break;
@@ -92,21 +92,8 @@ public class TestApp {
 		}
 		else {
 			System.out.println("Error in path");
-			//throw new FileNotFound(args[2]);
 			return false;
 		}
-		/*
-		if(matchesFileName(args[2])) {
-			remoteObjName = args[0]; 
-			command = args[1];
-			fileName = args[2];
-			replicationDegree = Integer.parseInt(args[3]);
-			return true;
-		}
-		else {
-			System.out.println("The filename specified is not valid.");
-			return false;
-		}*/
 	}
 	
 	public static boolean checkRestoreArgs(String[] args) {
@@ -117,16 +104,16 @@ public class TestApp {
 			return false;
 		 }
 		
-		if(matchesFileName(args[2])) {
+		file = new File(args[2]);
+		
+		if(file.exists() && !file.isDirectory()) {
 			remoteObjName = args[0];
 			command = args[1];
-			//fileName = args[2];
 			return true;
 		}
-		else {
-			System.out.println("The filename specified is not valid.");
-			return false;
-		}
+		
+		System.out.println("File was not found/accepted");
+		return false;
 	}
 	
 	public static boolean checkDeleteArgs(String[] args) {

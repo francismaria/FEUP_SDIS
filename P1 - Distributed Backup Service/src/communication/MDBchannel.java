@@ -69,11 +69,10 @@ public class MDBchannel extends ChannelInformation implements Runnable{
 		PutchunkMessage receivedMessage = new PutchunkMessage();
 		receivedMessage.parseMessageBytes(message);
 		
-		/*
+		
 		if(receivedMessage.getSenderId() == getPeer().getId()) {
-			//n aceita mensagens provenientes dele próprio
-			return;
-		}*/
+			return;			//it does not accepts messages from itself
+		}
 		
 		saveChunk(receivedMessage);
 		
@@ -82,7 +81,7 @@ public class MDBchannel extends ChannelInformation implements Runnable{
 
 	public void saveChunk(PutchunkMessage receivedMessage) {
 		
-		
+		//save in file?
 	}
 	
 	public void sendACK(String protocolVersion, int peerID, String fileID, int chunkNo) {

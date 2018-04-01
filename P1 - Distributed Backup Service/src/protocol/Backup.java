@@ -15,7 +15,7 @@ import messages.PutchunkMessage;
 import structures.PeerInfo;
 
 
-public class Backup extends Thread{
+public class Backup implements Runnable{
 	
 	private File file = null;
 	private int replicationDegree;
