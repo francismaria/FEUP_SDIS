@@ -67,7 +67,6 @@ public class MDBchannel extends ChannelInformation implements Runnable{
 	public void parsePUTCHUNKMessage(byte[] message) {
 		
 		PutchunkMessage receivedMessage = new PutchunkMessage();
-		
 		receivedMessage.parseMessageBytes(message);
 		
 		/*
@@ -76,10 +75,16 @@ public class MDBchannel extends ChannelInformation implements Runnable{
 			return;
 		}*/
 		
-		//save chunk in file 
+		saveChunk(receivedMessage);
+		
 		sendACK(receivedMessage.getProtocolVersion(), getPeer().getId(), receivedMessage.getFileId(), receivedMessage.getChunkNo());
 	}
 
+	public void saveChunk(PutchunkMessage receivedMessage) {
+		
+		
+	}
+	
 	public void sendACK(String protocolVersion, int peerID, String fileID, int chunkNo) {
 		
 		StoredMessage ackMessage = new StoredMessage(protocolVersion, peerID, fileID, chunkNo);
@@ -89,11 +94,11 @@ public class MDBchannel extends ChannelInformation implements Runnable{
 				communicationChannel.getGroupAddress(), communicationChannel.getPort());
 		
 		try {
+			
 			long randomTime = (long)(Math.random()*401);
 			Thread.sleep(randomTime);
-			System.out.println(randomTime + "   random time");
-			
 			MCchannelSocket.send(responsePacket);
+			
 		} catch (IOException e) {
 			System.out.println("Unable to send response socket to MC channel.\n");
 		} catch (InterruptedException e) {

@@ -21,8 +21,7 @@ public class Backup extends Thread{
 	private int replicationDegree;
 	
 	private final static long MAX_CHUNK_SIZE = 64000;
-	private final static long MAX_MSG_SIZE = 65024;
-	private static final int MAX_HEADER_SIZE = 1024;
+	private final static int MAX_ATTEMPTS = 5;
 	
 	private MCchannel communicationChannel = null;
 	private MDBchannel backupChannel = null;
@@ -54,16 +53,31 @@ public class Backup extends Thread{
 			
 			while((chunkLen = is.read(chunk)) != -1) {
 				
-				//while(confirmationPeers < repDegree)
-				sendChunk(chunk, chunkNo);
+				int i = 0;
+				long timeout = 1000;
 				
-				Thread.sleep(1000);
+				while(i < MAX_ATTEMPTS) {
 				
-				if(communicationChannel.getConfirmedPeers() < replicationDegree) {
-					System.out.println("NOT ENOUGH PEERS BACKING UP");
+					sendChunk(chunk, chunkNo);
+					
+					Thread.sleep(timeout);
+					
+					if(communicationChannel.getConfirmedPeers() >= replicationDegree) {
+						break;
+					}
+					
+					System.out.println("NOT ENOUGH PEERS BACKING UP\nAttempt: " + i + " timeout: " + timeout);
+					timeout *= 2;
+					i++;
+					communicationChannel.restoreConfirmedPeers();
 				}
 				
-				communicationChannel.restoreConfirmedPeers();
+				if(i == 5) {
+					System.out.println("NOT ENOUGH PEERS");
+				}
+				else
+					System.out.println("OK");
+				
 				chunkNo++;
 			}
 			
