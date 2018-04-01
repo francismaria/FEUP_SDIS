@@ -16,9 +16,6 @@ public class MDBchannel extends ChannelInformation implements Runnable{
 	private MulticastSocket MCchannelSocket;
 	private MCchannel communicationChannel = null; 
 	
-	private final static int MAX_HEADER_SIZE = 1024;
-	private final static long MAX_CHUNK_SIZE = 64000;
-	
 	private final static long MAX_MSG_SIZE = 65024;
 	
 	public MDBchannel(MCchannel communicationChannel, PeerInfo peer, String ipAddress, int port) throws UnknownHostException {
@@ -34,8 +31,7 @@ public class MDBchannel extends ChannelInformation implements Runnable{
 		byte[] buf;
 		DatagramPacket packet;
 		
-		joinChannel(getGroupAddress(), getPort());
-		initCommunicationSocket();
+		initCommunications();
 		
 		System.out.println("Connection Established: MDB CHANNEL");
 		
@@ -51,7 +47,8 @@ public class MDBchannel extends ChannelInformation implements Runnable{
 				continue;
 			}
 			
-			parseMessage(buf);
+			//String checkMessageType(buf);
+			parsePUTCHUNKMessage(buf);
 
 		}
 		
@@ -59,15 +56,7 @@ public class MDBchannel extends ChannelInformation implements Runnable{
 		socket.close();
 	}
 	
-	public void initCommunicationSocket() {
-		
-		try {	
-			MCchannelSocket = new MulticastSocket();
-		} catch (IOException e) {
-			System.out.println("Unable to create socket to MC channel");
-			return;
-		}
-	}
+
 	
 	public String[] parseHeader(String header) {
 		
@@ -81,32 +70,39 @@ public class MDBchannel extends ChannelInformation implements Runnable{
 		return null;
 	}
 	
-	public void parseMessage(byte[] message) {
+	public void parsePUTCHUNKMessage(byte[] message) {
 		
 		PutchunkMessage receivedMessage = new PutchunkMessage();
 		
 		receivedMessage.parseMessageBytes(message);
 		
-		sendACK(receivedMessage.getProtocolVersion(),/*peer.getId(),*/ receivedMessage.getFileId(), receivedMessage.getChunkNo());
+		//save chunk in file 
+		sendACK(receivedMessage.getProtocolVersion(), getPeer().getId(), receivedMessage.getFileId(), receivedMessage.getChunkNo());
 	}
 
-	public void sendACK(String protocolVersion, /*this peer ID,*/ String fileID, int chunkNo) {
+	public void sendACK(String protocolVersion, int peerID, String fileID, int chunkNo) {
 		
-		StoredMessage ackMessage = new StoredMessage(protocolVersion, 0, fileID, chunkNo);
+		StoredMessage ackMessage = new StoredMessage(protocolVersion, peerID, fileID, chunkNo);
 		byte[] message = ackMessage.getMessageBytes();
 		
 		DatagramPacket responsePacket = new DatagramPacket(message, message.length,
 				communicationChannel.getGroupAddress(), communicationChannel.getPort());
 		
 		try {
+			long randomTime = (long)(Math.random()*401);
+			Thread.sleep(randomTime);
+			System.out.println(randomTime + "   random time");
+			
 			MCchannelSocket.send(responsePacket);
 		} catch (IOException e) {
 			System.out.println("Unable to send response socket to MC channel.\n");
+		} catch (InterruptedException e) {
+			System.out.println("Error ocurred in sleeping.");
 		}
 		
 	}
 	
-	public void joinChannel(InetAddress groupAddress, int port) {
+	public void joinMDBchannel(InetAddress groupAddress, int port) {
 		
 		try {
 			socket = new MulticastSocket(port);
@@ -116,5 +112,21 @@ public class MDBchannel extends ChannelInformation implements Runnable{
 		} catch (IOException e) {
 			System.out.println("Unable to create a socket");
 		}
+	}
+	
+	public void initMCsocket() {
+		
+		try {	
+			MCchannelSocket = new MulticastSocket();
+		} catch (IOException e) {
+			System.out.println("Unable to create socket to MC channel");
+			return;
+		}
+	}
+	
+	private void initCommunications() {
+		
+		joinMDBchannel(getGroupAddress(), getPort());
+		initMCsocket();
 	}
 }
