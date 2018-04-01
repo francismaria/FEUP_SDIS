@@ -57,7 +57,6 @@ public class MDBchannel extends ChannelInformation implements Runnable{
 				break;
 			}
 			
-
 		}
 		
 		MCchannelSocket.close();

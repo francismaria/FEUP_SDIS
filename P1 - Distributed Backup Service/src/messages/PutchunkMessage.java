@@ -47,8 +47,6 @@ public class PutchunkMessage extends Message{
 		this.message = message;
 		
 		parseMessage();
-
-
 	}
 	
 	private void parseMessage(){
@@ -62,7 +60,6 @@ public class PutchunkMessage extends Message{
 		}
 		
 		byte[] header = new byte[headerLength];
-		//byte[] header = new byte[MAX_HEADER_SIZE];
 		body = new byte[MAX_BODY_SIZE];
 		
 		System.arraycopy(message, 0, header, 0, headerLength);

@@ -54,26 +54,31 @@ public class Backup extends Thread{
 			
 			while((chunkLen = is.read(chunk)) != -1) {
 				
+				//while(confirmationPeers < repDegree)
 				sendChunk(chunk, chunkNo);
 				
+				Thread.sleep(1000);
+				
+				if(communicationChannel.getConfirmedPeers() < replicationDegree) {
+					System.out.println("NOT ENOUGH PEERS BACKING UP");
+				}
+				
+				communicationChannel.restoreConfirmedPeers();
 				chunkNo++;
 			}
 			
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.println("File was not found.");
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} catch (InterruptedException e) {
+			System.out.println("Thread was interrupted in sleep.");
 		}
-		
-		//sendMessage();
 
 	}
 	
 	private void sendChunk(byte[] body, int chunkNo) {
 		
-		//byte[] message = createPUTCHUNK(body, chunkNo); 
 		PutchunkMessage messageInfo = new PutchunkMessage(peer.getProtocolVersion(), peer.getId(), "FILE_ID", 
 				chunkNo, replicationDegree, body);
 		
@@ -88,26 +93,6 @@ public class Backup extends Thread{
 		}
 	}
 	
-	private byte[] createPUTCHUNK(byte[] body, int chunkNo) {
-		
-		byte[] message = new byte[(int)MAX_MSG_SIZE];
-		
-		String headerString = "PUTCHUNK " + peer.getProtocolVersion() + " " + Integer.toString(peer.getId()) + 
-				" " + "FILE_ID" + " " + Integer.toString(chunkNo) + " " + Integer.toString(replicationDegree);
-		
-		byte[] header = headerString.getBytes();
-		byte[] delimiters = new byte[2];
-		
-		delimiters[0] = (byte)0xD;
-		delimiters[1] = (byte)0xA;
-		
-		System.arraycopy(header, 0, message, 0, header.length);
-		System.arraycopy(delimiters, 0, message, header.length, delimiters.length);
-		System.arraycopy(body, 0, message,MAX_HEADER_SIZE/*header.length + delimiters.length*/, body.length);
-		
-		return message;
-	}
-	
 	private void initSocket() {
 		
 		try {
@@ -116,18 +101,5 @@ public class Backup extends Thread{
 			System.out.println("Unable to create socket.");
 		}
 	}
-	/*
-	private void sendMessage() {
-				
-		String str = "MESSAGE TO MDB CHANNEL";
-		byte[] buf = str.getBytes();
-		DatagramPacket packet = new DatagramPacket(buf, buf.length, backupChannel.getGroupAddress(), backupChannel.getPort());
-		
-		try {
-			backupSocket.send(packet);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 
-	}*/
 }
