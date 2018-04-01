@@ -34,12 +34,12 @@ public class Restore implements Runnable{
 		int i = 0;
 		initSocket();
 		
-		while(running) {
+		//while(running) {
 			
 			sendGetchunkRequest(i);
 			
 			i++;
-		}
+		//}
 	}
 	
 	private void sendGetchunkRequest(int chunkNo) {
@@ -53,6 +53,7 @@ public class Restore implements Runnable{
 				communicationChannel.getPort());
 		
 		try {
+			System.out.println("entrou");
 			communicationSocket.send(packet);
 		} catch (IOException e) {
 			System.out.println("Unable to send packet");

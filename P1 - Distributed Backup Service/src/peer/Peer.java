@@ -11,6 +11,7 @@ import java.rmi.server.UnicastRemoteObject;
 import communication.*;
 import exceptions.InvalidArgumentsException;
 import protocol.Backup;
+import protocol.Restore;
 import rmi.RMIinterface;
 import structures.PeerInfo;
 
@@ -130,7 +131,7 @@ public class Peer implements RMIinterface{
 	@Override
 	public void restore(File file) throws RemoteException {
 		 
-		//(new Thread(new Restore(info, file, communicationChannel, restoreChannel))).start();
+		(new Thread(new Restore(info, file, communicationChannel, restoreChannel))).start();
 	}
 
 	@Override
