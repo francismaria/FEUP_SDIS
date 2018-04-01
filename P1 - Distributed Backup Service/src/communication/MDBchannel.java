@@ -47,8 +47,16 @@ public class MDBchannel extends ChannelInformation implements Runnable{
 				continue;
 			}
 			
-			//String checkMessageType(buf);
-			parsePUTCHUNKMessage(buf);
+			//String type = checkMessageType(buf);
+			
+			switch(type) {
+			case "PUTCHUNK":
+				parsePUTCHUNKMessage(buf);
+				break;
+			default:
+				break;
+			}
+			
 
 		}
 		
@@ -56,25 +64,17 @@ public class MDBchannel extends ChannelInformation implements Runnable{
 		socket.close();
 	}
 	
-
-	
-	public String[] parseHeader(String header) {
-		
-		String[] parsedHeader = header.split(" ");
-		
-		if(parsedHeader[0].equals("PUTCHUNK")) {
-			//if(Integer.parseInt(parsedHeader[2]) == ) peer.getId()  não aceita pois vem do mesmo peer
-			//acceptChunk();
-			return parsedHeader;
-		}
-		return null;
-	}
-	
 	public void parsePUTCHUNKMessage(byte[] message) {
 		
 		PutchunkMessage receivedMessage = new PutchunkMessage();
 		
 		receivedMessage.parseMessageBytes(message);
+		
+		/*
+		if(receivedMessage.getSenderId() == getPeer().getId()) {
+			//n aceita mensagens provenientes dele próprio
+			return;
+		}*/
 		
 		//save chunk in file 
 		sendACK(receivedMessage.getProtocolVersion(), getPeer().getId(), receivedMessage.getFileId(), receivedMessage.getChunkNo());
