@@ -2,10 +2,12 @@ package protocol;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 
 import communication.MCchannel;
 import communication.MDRchannel;
+import messages.GetchunkMessage;
 import structures.PeerInfo;
 
 public class Restore implements Runnable{
@@ -29,17 +31,32 @@ public class Restore implements Runnable{
 		
 		boolean running  = true;
 		
+		int i = 0;
 		initSocket();
 		
-		//while(running) {
+		while(running) {
 			
-			sendGetchunkRequest();
-		//}
+			sendGetchunkRequest(i);
+			
+			i++;
+		}
 	}
 	
-	private void sendGetchunkRequest() {
+	private void sendGetchunkRequest(int chunkNo) {
 		
+		GetchunkMessage retrieveMessage = new GetchunkMessage(peer.getProtocolVersion(), peer.getId(), "FILE_ID", 
+				chunkNo);
 		
+		byte[] message = retrieveMessage.getMessageBytes();
+		
+		DatagramPacket packet = new DatagramPacket(message, message.length, communicationChannel.getGroupAddress(),
+				communicationChannel.getPort());
+		
+		try {
+			communicationSocket.send(packet);
+		} catch (IOException e) {
+			System.out.println("Unable to send packet");
+		}
 	}
 	
 	private void initSocket() {

@@ -7,6 +7,7 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
+import messages.GetchunkMessage;
 import messages.StoredMessage;
 import structures.PeerInfo;
 
@@ -55,11 +56,14 @@ public class MCchannel extends ChannelInformation implements Runnable{
 			String type = checkMessageType(buf);
 			
 			switch(type) {
-			case "STORED":
-				parseSTOREDMessage(buf);
-				break;
-			default:
-				break;
+				case "STORED":
+					parseSTOREDMessage(buf);
+					break;
+				case "GETCHUNK":
+					parseGETCHUNKMessage(buf);
+					break;
+				default:
+					break;
 			}
 			/*
 			String receivedInfo = new String(packet.getData(), 0, packet.getLength());
@@ -81,6 +85,18 @@ public class MCchannel extends ChannelInformation implements Runnable{
 		receivingACK.parseMessage(message);
 		
 		confirmedPeers.add(receivingACK);
+	}
+	
+	private void parseGETCHUNKMessage(byte[] message) {
+		
+		GetchunkMessage receivingRequest = new GetchunkMessage();
+		receivingRequest.parseMessage(message);
+		
+		if(receivingRequest.getSenderId() == getPeer().getId()) {
+			return;
+		}
+		
+		
 	}
 	
 	public void restoreConfirmedPeers() {
