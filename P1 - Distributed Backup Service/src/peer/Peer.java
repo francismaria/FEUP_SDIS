@@ -11,6 +11,7 @@ import java.rmi.server.UnicastRemoteObject;
 import communication.*;
 import exceptions.InvalidArgumentsException;
 import protocol.Backup;
+import protocol.Delete;
 import protocol.Restore;
 import rmi.RMIinterface;
 import structures.PeerInfo;
@@ -135,9 +136,9 @@ public class Peer implements RMIinterface{
 	}
 
 	@Override
-	public void delete() throws RemoteException {
+	public void delete(File file) throws RemoteException {
 		 
-		// delete
+		(new Thread(new Delete(info, file))).start();
 	}
 
 	@Override

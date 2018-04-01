@@ -16,7 +16,8 @@ import exceptions.*;
 public class TestApp {
 	
 	private static File file = null;
-
+	private static String fileID = null;
+	
 	private static byte[] fileBytes = null;
 	
 	private static String command = null;
@@ -43,6 +44,8 @@ public class TestApp {
 		case "RESTORE":
 			stub.restore(file);
 			break;
+		case "DELETE":
+			stub.delete(file);
 		default:
 			break;
 		}
@@ -123,17 +126,16 @@ public class TestApp {
 					+ "RESTORE fileName");
 			return false;
 		}
-		
-		if(matchesFileName(args[2])) {
+
+		file = new File(args[2]);
+		if(file.exists() && !file.isDirectory()) {
 			remoteObjName = args[0];
 			command = args[1];
-			//fileName = args[2];
 			return true;
 		}
-		else {
-			System.out.println("The filename specified is not valid.");
-			return false;
-		}
+		
+		System.out.println("File was not found/accepted");
+		return false;
 	}
 	
 	public static boolean checkReclaimArgs(String[] args) {

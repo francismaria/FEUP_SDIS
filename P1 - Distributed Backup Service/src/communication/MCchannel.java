@@ -65,6 +65,9 @@ public class MCchannel extends ChannelInformation implements Runnable{
 				case "GETCHUNK":
 					parseGETCHUNKMessage(buf);
 					break;
+				case "DELETE":
+					System.out.println("CORRETO!");
+					break;
 				default:
 					break;
 			}

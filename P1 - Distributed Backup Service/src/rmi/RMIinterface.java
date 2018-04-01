@@ -10,7 +10,7 @@ public interface RMIinterface extends Remote{
 	
 	void restore(File file) throws RemoteException;
 	
-	void delete() throws RemoteException;
+	void delete(File file) throws RemoteException;
 	
 	void reclaim() throws RemoteException;
 	
