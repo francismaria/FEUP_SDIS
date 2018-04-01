@@ -81,21 +81,6 @@ public class MDBchannel extends ChannelInformation implements Runnable{
 		return null;
 	}
 	
-	/*public void acceptChunk(String[] parsedHeader) {
-		
-		//byte[] message = createSTORED(parsedHeader);
-		//String s = "RESPONSE TO MDB CHANNEL";
-		//byte[] buf = s.getBytes();
-		DatagramPacket packet = new DatagramPacket(message, message.length, communicationChannel.getGroupAddress(), communicationChannel.getPort());
-		
-		try {
-			MCchannelSocket.send(packet);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}*/
-	
 	public void parseMessage(byte[] message) {
 		
 		PutchunkMessage receivedMessage = new PutchunkMessage();
@@ -120,23 +105,7 @@ public class MDBchannel extends ChannelInformation implements Runnable{
 		}
 		
 	}
-	/*
-	public int getHeaderLength(byte[] message) {
-		
-		for(int i = 0; i < message.length; i++) {
-			if(message[i] == (byte)0xD) {
-				i++;
-				if(message[i] == (byte)0xA) {
-					return i+1;
-				}
-				else {
-					i--;
-				}
-			}
-		}
-		return 0;
-	}
-	*/
+	
 	public void joinChannel(InetAddress groupAddress, int port) {
 		
 		try {
