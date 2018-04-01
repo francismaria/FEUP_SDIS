@@ -47,7 +47,7 @@ public class MDBchannel extends ChannelInformation implements Runnable{
 				continue;
 			}
 			
-			//String type = checkMessageType(buf);
+			String type = checkMessageType(buf);
 			
 			switch(type) {
 			case "PUTCHUNK":
@@ -64,6 +64,7 @@ public class MDBchannel extends ChannelInformation implements Runnable{
 		socket.close();
 	}
 	
+
 	public void parsePUTCHUNKMessage(byte[] message) {
 		
 		PutchunkMessage receivedMessage = new PutchunkMessage();
