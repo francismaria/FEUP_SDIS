@@ -37,7 +37,6 @@ public class Restore implements Runnable{
 		//while(running) {
 			
 			sendGetchunkRequest(i);
-			
 			i++;
 		//}
 	}
@@ -53,7 +52,6 @@ public class Restore implements Runnable{
 				communicationChannel.getPort());
 		
 		try {
-			System.out.println("entrou");
 			communicationSocket.send(packet);
 		} catch (IOException e) {
 			System.out.println("Unable to send packet");

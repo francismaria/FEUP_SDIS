@@ -6,6 +6,7 @@ import java.net.InetAddress;
 import java.net.MulticastSocket;
 import java.net.UnknownHostException;
 
+import messages.ChunkMessage;
 import structures.PeerInfo;
 
 public class MDRchannel extends ChannelInformation implements Runnable{
@@ -38,15 +39,30 @@ public class MDRchannel extends ChannelInformation implements Runnable{
 				System.out.println("Unable to receive packet.");
 			}
 			
+			String type = checkMessageType(buf);
+			
+			switch(type) {
+				case "CHUNK":
+					parseCHUNKMessage(buf);
+				default:
+					break;
+			}
+		/*
 			String receivedInfo = new String(packet.getData(), 0, packet.getLength());
 			System.out.println(receivedInfo);
-		
-			
-			
+		*/
 		}
 	}
 	
-	public static void joinChannel(InetAddress groupAddress, int port) {
+	private void parseCHUNKMessage(byte[] message) {
+		
+		ChunkMessage chunk = new ChunkMessage();
+		chunk.parseMessage(message);
+		
+		System.out.println("CHEGOU AO PEER DO MDR.: -- " + chunk.getType() + " " + chunk.getProtocolVersion());
+	}
+	
+	public void joinChannel(InetAddress groupAddress, int port) {
 		
 		try {
 			socket = new MulticastSocket(port);

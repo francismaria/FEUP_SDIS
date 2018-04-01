@@ -7,6 +7,7 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
+import messages.ChunkMessage;
 import messages.GetchunkMessage;
 import messages.StoredMessage;
 import structures.PeerInfo;
@@ -14,6 +15,7 @@ import structures.PeerInfo;
 public class MCchannel extends ChannelInformation implements Runnable{
 	
 	private MulticastSocket socket;
+	private MulticastSocket MDRchannelSocket;
 	private List<StoredMessage> confirmedPeers = new ArrayList<StoredMessage>();
 	
 	public MCchannel(PeerInfo peer, String ipAddress, int port) throws UnknownHostException {
@@ -36,6 +38,7 @@ public class MCchannel extends ChannelInformation implements Runnable{
 			socket = new MulticastSocket(getPort());
 			socket.setTimeToLive(1);
 			socket.joinGroup(getGroupAddress());
+			MDRchannelSocket = new MulticastSocket();
 		} catch (IOException e) {
 			System.out.println("Unable to create a socket");
 		}
@@ -60,8 +63,6 @@ public class MCchannel extends ChannelInformation implements Runnable{
 					parseSTOREDMessage(buf);
 					break;
 				case "GETCHUNK":
-					String receivedInfo = new String(packet.getData(), 0, packet.getLength());
-					System.out.println(receivedInfo.trim() + "---- this is MC channel speaking");
 					parseGETCHUNKMessage(buf);
 					break;
 				default:
@@ -80,6 +81,7 @@ public class MCchannel extends ChannelInformation implements Runnable{
 			System.out.println("Unable to leave Group.");
 		}
 		socket.close();
+		MDRchannelSocket.close();
 	}
 	
 	private void parseSTOREDMessage(byte[] message) {
@@ -94,12 +96,38 @@ public class MCchannel extends ChannelInformation implements Runnable{
 		
 		GetchunkMessage receivingRequest = new GetchunkMessage();
 		receivingRequest.parseMessage(message);
-		
+		/*
 		if(receivingRequest.getSenderId() == getPeer().getId()) {
 			return;
+		}*/
+		
+		//se n tiver o chunk requisitado : return;
+		try {
+			Thread.sleep((long)Math.random()*401);
+		} catch (InterruptedException e) {
+			System.out.println("Thread was interrupted while sleeping.");
 		}
 		
-		//send CHUNK message
+		sendCHUNKmessage(receivingRequest.getProtocolVersion(), getPeer().getId(), receivingRequest.getFileId(), 0);
+	}
+	
+	private void sendCHUNKmessage(String protocolVersion, int peerID, String fileID, int chunkNo) {
+		
+		byte[] exemplo = "ISTO É UM ACK SE TIVER.".getBytes();
+		
+		ChunkMessage ackMessage = new ChunkMessage(protocolVersion, peerID, fileID, chunkNo, exemplo);
+		byte[] message = ackMessage.getMessageBytes();
+		
+		DatagramPacket packet = new DatagramPacket(message, message.length,
+				getPeer().getRestoreChannel().getGroupAddress(), 
+				getPeer().getRestoreChannel().getPort());
+		
+		try {
+			MDRchannelSocket.send(packet);
+		} catch (IOException e) {
+			System.out.println("Unable to send packet through MDR channel");
+		}
+		
 	}
 	
 	public void restoreConfirmedPeers() {

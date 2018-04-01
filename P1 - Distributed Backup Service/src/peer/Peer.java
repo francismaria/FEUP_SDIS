@@ -34,7 +34,6 @@ public class Peer implements RMIinterface{
 		}
 		
 		initRMIservice();
-		
 		startListeningChannels();
 	}
 	
@@ -47,7 +46,8 @@ public class Peer implements RMIinterface{
 			remoteObjName = args[2];
 			
 			if(parseMCname(args[3]) && parseMDBname(args[4]) && parseMDRname(args[5])){
-				info = new PeerInfo(peerId, args[0]);
+				info = new PeerInfo(peerId, args[0], communicationChannel,
+						backupChannel, restoreChannel);
 				return true;
 			}
 		}
