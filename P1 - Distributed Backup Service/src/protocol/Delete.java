@@ -70,6 +70,7 @@ public class Delete implements Runnable {
 	
 	private void sendDELETEMessage() {
 		
+		peer.deleteChunksOfFile(this.fileID);
 		DeleteMessage deleteFile = new DeleteMessage(peer.getProtocolVersion(), peer.getId(), this.fileID);
 		
 		byte[] message = deleteFile.getMessageBytes();

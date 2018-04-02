@@ -22,6 +22,8 @@ public class PeerInfo {
 	private static MDBchannel backupChannel;
 	private static MDRchannel restoreChannel;
 	
+	private static StorageInfo storage;
+	
 	private static String dirPath;
 	
 	private static List<ChunkInfo> savedChunks = new ArrayList<ChunkInfo>();
@@ -35,10 +37,18 @@ public class PeerInfo {
 		this.communicationChannel = communication;
 		this.backupChannel = backup;
 		this.restoreChannel = restore;
-		initStorage();
+		storage = new StorageInfo(peerID);
+		//initStorage();
 	}
 	
 	private void initStorage() {
+		
+		initChunkStorage();
+		initBackupFilesStorage();
+
+	}
+	
+	private void initChunkStorage() {
 		
 		//este tem de ser um path que dê em todos os PCS!!!   "/tmp/"
 		dirPath = "/home/francisco/Desktop/Peer_" + peerID;
@@ -48,6 +58,10 @@ public class PeerInfo {
 			dir.mkdir();
 		}
 		//else ler o que lá está
+	}
+	
+	private void initBackupFilesStorage() {
+		
 	}
 
 	public static int getId() {
@@ -71,21 +85,33 @@ public class PeerInfo {
 	}
 	
 	public static List<ChunkInfo> getSavedChunks(){
-		return savedChunks;
+		//return savedChunks;
+		return storage.getStoredChunks();
 	}
 	
 	public static long getTotalDiskSpace() {
-		return diskSpace;
+		return storage.getTotalDiskSpace();
+		//return diskSpace;
 	}
 	
 	public static long getUsedSpace() {
-		return usedSpace;
+		//return usedSpace;
+		return storage.getUsedDiskSpace();
 	}
 	
 	public static long getAvailableSpace() {
-		return diskSpace-usedSpace;
+		//return diskSpace-usedSpace;
+		return storage.getAvailableDiskSpace();
 	}
 	
+	public static void deleteChunksOfFile(String fileID) {
+		storage.deleteChunksOfFile(fileID);
+	}
+	
+	public static void saveChunk(ChunkInfo chunk) {
+		storage.saveChunk(chunk);
+	}
+/*	
 	public static void saveChunk(ChunkInfo chunk) {
 		savedChunks.add(chunk);
 		usedSpace += chunk.getData().length;
@@ -151,5 +177,10 @@ public class PeerInfo {
 			chunk.delete();
 		}
 		dir.delete();
+	}
+	*/
+	public String toString() {
+		
+		return "to String method";
 	}
 }

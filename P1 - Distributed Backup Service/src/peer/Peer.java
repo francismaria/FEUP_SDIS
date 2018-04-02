@@ -151,8 +151,9 @@ public class Peer implements RMIinterface{
 	}
 
 	@Override
-	public void state() throws RemoteException {
+	public String state() throws RemoteException {
 		
-		(new Thread(new State(info))).start();
+		//(new Thread(new State(info))).start();
+		return info.toString();
 	}
 }

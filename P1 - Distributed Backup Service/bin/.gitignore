@@ -3,3 +3,5 @@
 /peer/
 /protocol/
 /messages/
+/client/
+/rmi/

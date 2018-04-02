@@ -14,5 +14,5 @@ public interface RMIinterface extends Remote{
 	
 	void reclaim(int diskSpace) throws RemoteException;
 	
-	void state() throws RemoteException;
+	String state() throws RemoteException;
 }
