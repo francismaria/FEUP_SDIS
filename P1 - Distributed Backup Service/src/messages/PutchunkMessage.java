@@ -17,7 +17,6 @@ public class PutchunkMessage extends Message{
 		this.replicationDegree = 0;
 		this.body = null;
 		this.message = new byte[messageLength];
-		//this.bodyLength = messageLength - Message.MAX_HEADER_SIZE;
 	}
 	
 	public PutchunkMessage(String version, int senderID, String fileID, int chunkNo,

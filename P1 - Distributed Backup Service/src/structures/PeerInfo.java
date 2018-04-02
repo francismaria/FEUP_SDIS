@@ -87,11 +87,12 @@ public class PeerInfo {
 		savedChunks.add(chunk);
 		usedSpace += chunk.getData().length;
 		
-
+		String filePath = initFileDir(chunk);
+		
 		FileOutputStream stream;
 		try {
 			//stream = new FileOutputStream("/home/francisco/FEUP/SDIS/Files/myfile.jpg",true);
-			String chunkPath = dirPath + "/" + chunk.getChunkNo() + ".bin";
+			String chunkPath = filePath + "/" + chunk.getChunkNo() + ".bin";
 			stream = new FileOutputStream(chunkPath);
 			stream.write(chunk.getData());
 			stream.close();
@@ -103,5 +104,18 @@ public class PeerInfo {
 			return;
 		}
 
+	}
+	
+	public static String initFileDir(ChunkInfo chunk) {
+		
+		String filePath = dirPath + "/" + chunk.getFileId();
+		
+		File dir = new File(filePath);
+		
+		if(!dir.exists()) {
+			dir.mkdir();
+		}
+		
+		return filePath;
 	}
 }

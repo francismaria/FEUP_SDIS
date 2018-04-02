@@ -45,11 +45,19 @@ public class Backup implements Runnable{
 		try {
 			digest = MessageDigest.getInstance("SHA-256");
 			byte[] hashed = digest.digest(file.getName().getBytes(StandardCharsets.UTF_8));
-			this.fileID = Base64.getEncoder().encodeToString(hashed);
+			//this.fileID = Base64.getEncoder().encodeToString(hashed);
+			this.fileID = bytesToHex(hashed);
 		} catch (NoSuchAlgorithmException e) {
 			System.out.println("No such Algorithm");
 		}
 	}
+	
+	// credits to : github: avilches
+    public static String bytesToHex(byte[] bytes) {
+        StringBuffer result = new StringBuffer();
+        for (byte byt : bytes) result.append(Integer.toString((byt & 0xff) + 0x100, 16).substring(1));
+        return result.toString();
+    }
 	
 	public void run() {
 		
