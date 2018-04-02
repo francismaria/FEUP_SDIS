@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import messages.ChunkMessage;
+import messages.DeleteMessage;
 import messages.GetchunkMessage;
 import messages.StoredMessage;
 import structures.PeerInfo;
@@ -66,7 +67,7 @@ public class MCchannel extends ChannelInformation implements Runnable{
 					parseGETCHUNKMessage(buf);
 					break;
 				case "DELETE":
-					System.out.println("CORRETO!");
+					parseDELETEMessage(buf, packet.getLength());
 					break;
 				default:
 					break;
@@ -125,7 +126,16 @@ public class MCchannel extends ChannelInformation implements Runnable{
 		} catch (IOException e) {
 			System.out.println("Unable to send packet through MDR channel");
 		}
+	}
+	
+	private void parseDELETEMessage(byte[] message, int messageLength) {
 		
+		DeleteMessage deleteMessage = new DeleteMessage(messageLength);
+		deleteMessage.parseMessage(message);
+		
+		System.out.println(deleteMessage.getFileId());
+		
+		//do smth
 	}
 	
 	public void restoreConfirmedPeers() {
