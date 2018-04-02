@@ -4,28 +4,32 @@ public class PutchunkMessage extends Message{
 
 	private final static long MAX_MSG_SIZE = Message.MAX_HEADER_SIZE + Message.MAX_BODY_SIZE;
 	
-	private byte[] message = new byte[(int)MAX_MSG_SIZE];
+	private byte[] message;
 	
 	private int chunkNo;
 	private int replicationDegree;
 	private byte[] body;
+	private int bodyLength;
 	
-	public PutchunkMessage() {
+	public PutchunkMessage(int totalLength) {
 		
 		super();
 		
 		this.chunkNo = 0;
 		this.replicationDegree = 0;
 		this.body = null;
+		this.bodyLength = totalLength - Message.MAX_HEADER_SIZE;
 	}
 	
-	public PutchunkMessage(String version, int senderID, String fileID, int chunkNo, int replicationDegree, byte[] body) {
+	public PutchunkMessage(String version, int senderID, String fileID, int chunkNo,
+			int replicationDegree, byte[] body, int bodyLength) {
 		
 		super("PUTCHUNK", version, senderID, fileID);
 		
 		this.chunkNo = chunkNo;
 		this.replicationDegree = replicationDegree;
 		this.body = body;
+		this.bodyLength = bodyLength;
 		
 		constructMessage();
 	}
@@ -37,9 +41,11 @@ public class PutchunkMessage extends Message{
 		
 		byte[] header = headerString.getBytes();
 		
+		this.message = new byte[MAX_HEADER_SIZE + bodyLength];
+		
 		System.arraycopy(header, 0, message, 0, header.length);
 		System.arraycopy(delimiters, 0, message, header.length, delimiters.length);
-		System.arraycopy(body, 0, message, MAX_HEADER_SIZE, body.length);
+		System.arraycopy(body, 0, message, MAX_HEADER_SIZE, /*body.length*/bodyLength);
 	}
 	
 	public void parseMessageBytes(byte[] message) {
@@ -52,7 +58,7 @@ public class PutchunkMessage extends Message{
 	private void parseMessage(){
 		
 		int headerLength = getHeaderLength(message);
-		int bodyLength = message.length - Message.MAX_HEADER_SIZE;
+		//int bodyLength = message.length - Message.MAX_HEADER_SIZE;
 		
 		if(headerLength == 0) {
 			System.out.println("Unable to read header.");
@@ -60,7 +66,7 @@ public class PutchunkMessage extends Message{
 		}
 		
 		byte[] header = new byte[headerLength];
-		body = new byte[MAX_BODY_SIZE];
+		body = new byte[bodyLength];
 		
 		System.arraycopy(message, 0, header, 0, headerLength);
 		System.arraycopy(message, headerLength, body, 0, bodyLength);

@@ -8,6 +8,7 @@ import java.net.UnknownHostException;
 
 import messages.PutchunkMessage;
 import messages.StoredMessage;
+import structures.ChunkInfo;
 import structures.PeerInfo;
 
 public class MDBchannel extends ChannelInformation implements Runnable{
@@ -51,7 +52,7 @@ public class MDBchannel extends ChannelInformation implements Runnable{
 			
 			switch(type) {
 			case "PUTCHUNK":
-				parsePUTCHUNKMessage(buf);
+				parsePUTCHUNKMessage(buf, packet.getLength());
 				break;
 			default:
 				break;
@@ -64,14 +65,21 @@ public class MDBchannel extends ChannelInformation implements Runnable{
 	}
 	
 
-	public void parsePUTCHUNKMessage(byte[] message) {
+	public void parsePUTCHUNKMessage(byte[] message, int messageLength) {
 		
-		PutchunkMessage receivedMessage = new PutchunkMessage();
+		PutchunkMessage receivedMessage = new PutchunkMessage(messageLength);
 		receivedMessage.parseMessageBytes(message);
 		
-		
-		if(receivedMessage.getSenderId() == getPeer().getId()) {
+		System.out.println(receivedMessage.getBody().length);
+		/*
+		if(receivedMessage.getSenderId() == getPeer().getId() || n tem espaço no disco) {
 			return;			//it does not accepts messages from itself
+		}*/
+		
+		if(receivedMessage.getBody().length > getPeer().getAvailableSpace()) {
+			System.out.println("This peer hasn't got sufficient space to save this chunk: " + receivedMessage.getFileId() + " "
+					+ "" + receivedMessage.getChunkNo());
+			return;
 		}
 		
 		saveChunk(receivedMessage);
@@ -81,7 +89,10 @@ public class MDBchannel extends ChannelInformation implements Runnable{
 
 	public void saveChunk(PutchunkMessage receivedMessage) {
 		
-		//save in file?
+		ChunkInfo chunk = new ChunkInfo(receivedMessage.getFileId(), receivedMessage.getChunkNo(),
+				receivedMessage.getBody());
+		getPeer().saveChunk(chunk);
+		System.out.println(PeerInfo.getAvailableSpace());
 	}
 	
 	public void sendACK(String protocolVersion, int peerID, String fileID, int chunkNo) {

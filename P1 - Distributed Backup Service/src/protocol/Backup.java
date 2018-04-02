@@ -48,7 +48,7 @@ public class Backup implements Runnable{
 		
 			byte[] chunk = new byte[(int)MAX_CHUNK_SIZE];
 			
-			int chunkLen = 0, chunkNo = 1;
+			int chunkLen = 0, chunkNo = 0;
 			
 			while((chunkLen = is.read(chunk)) != -1) {
 				
@@ -57,7 +57,7 @@ public class Backup implements Runnable{
 				
 				while(i < MAX_ATTEMPTS) {
 				
-					sendChunk(chunk, chunkNo);
+					sendChunk(chunk, chunkNo, chunkLen);
 					
 					Thread.sleep(timeout);
 					
@@ -90,10 +90,10 @@ public class Backup implements Runnable{
 
 	}
 	
-	private void sendChunk(byte[] body, int chunkNo) {
+	private void sendChunk(byte[] body, int chunkNo, int chunkLen) {
 		
 		PutchunkMessage messageInfo = new PutchunkMessage(peer.getProtocolVersion(), peer.getId(), "FILE_ID", 
-				chunkNo, replicationDegree, body);
+				chunkNo, replicationDegree, body, chunkLen);
 		
 		byte[] message = messageInfo.getMessageBytes();
 		

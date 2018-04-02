@@ -38,6 +38,7 @@ public class Peer implements RMIinterface{
 		
 		initRMIservice();
 		startListeningChannels();
+		
 	}
 	
 	public static boolean parseArguments(String[] args) {

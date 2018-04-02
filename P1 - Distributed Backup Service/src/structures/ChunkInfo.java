@@ -3,16 +3,21 @@ package structures;
 public class ChunkInfo {
 	
 	private byte[] data;
-	private int fileID;
-	//private int senderID;
+	private String fileID;
+	private int chunkNo;
 	
-	public ChunkInfo(int fileID, byte[] data) {
+	public ChunkInfo(String fileID, int chunkNo, byte[] data) {
 		this.fileID = fileID;
+		this.chunkNo = chunkNo;
 		this.data = data;
 	}
 	
-	public int getFileId() {
+	public String getFileId() {
 		return fileID;
+	}
+	
+	public int getChunkNo() {
+		return chunkNo;
 	}
 	
 	public byte[] getData() {
