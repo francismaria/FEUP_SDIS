@@ -4,7 +4,12 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class StorageInfo {
@@ -127,6 +132,20 @@ public class StorageInfo {
 			chunk.delete();
 		}
 		dir.delete();
+	}
+	
+	public void saveBackup(FileInfo fileInfo) {
+		
+		String filePath = backupDirPath + "/" + fileInfo.getName() + ".txt";
+		List<String> lines = Arrays.asList(fileInfo.toString());
+		
+		Path file = Paths.get(filePath);
+		
+		try {
+			Files.write(file, lines, Charset.forName("UTF-8"));
+		} catch (IOException e) {
+			System.out.println("Error writing to file.");
+		}
 	}
 	
 	public long getTotalDiskSpace() {

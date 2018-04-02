@@ -104,18 +104,15 @@ public class MDBchannel extends ChannelInformation implements Runnable{
 		DatagramPacket responsePacket = new DatagramPacket(message, message.length,
 				communicationChannel.getGroupAddress(), communicationChannel.getPort());
 		
-		try {
-			
+		try {	
 			long randomTime = (long)(Math.random()*401);
 			Thread.sleep(randomTime);
 			MCchannelSocket.send(responsePacket);
-			
 		} catch (IOException e) {
 			System.out.println("Unable to send response socket to MC channel.\n");
 		} catch (InterruptedException e) {
 			System.out.println("Error ocurred in sleeping.");
-		}
-		
+		}	
 	}
 	
 	public void joinMDBchannel(InetAddress groupAddress, int port) {

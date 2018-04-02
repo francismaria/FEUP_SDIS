@@ -11,10 +11,13 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.List;
 
 import communication.MCchannel;
 import communication.MDBchannel;
 import messages.PutchunkMessage;
+import structures.BackupChunkInfo;
+import structures.FileInfo;
 import structures.PeerInfo;
 
 
@@ -71,8 +74,9 @@ public class Backup implements Runnable{
 			byte[] chunk = new byte[(int)MAX_CHUNK_SIZE];
 			
 			int chunkLen = 0, chunkNo = 0;
+			List<BackupChunkInfo> allChunkInfo = new ArrayList<BackupChunkInfo>();
 			
-			while((chunkLen = is.read(chunk)) != -1) {
+			while((chunkLen = is.read(chunk)) != -1) {	
 				
 				int i = 0;
 				long timeout = 1000;
@@ -93,14 +97,23 @@ public class Backup implements Runnable{
 					communicationChannel.restoreConfirmedPeers();
 				}
 				
+				/*
 				if(i == 5) {
 					System.out.println("NOT ENOUGH PEERS");
 				}
 				else
 					System.out.println("OK");
+				*/
 				
+				BackupChunkInfo chunkInfo = new BackupChunkInfo(chunkNo,
+						communicationChannel.getConfirmedPeers());
+				System.out.println(chunkInfo);
+				allChunkInfo.add(chunkInfo);
 				chunkNo++;
+				communicationChannel.restoreConfirmedPeers();
 			}
+			
+			saveFileInfo(allChunkInfo);
 			
 		} catch (FileNotFoundException e) {
 			System.out.println("File was not found.");
@@ -110,6 +123,13 @@ public class Backup implements Runnable{
 			System.out.println("Thread was interrupted in sleep.");
 		}
 
+	}
+	
+	private void saveFileInfo(List<BackupChunkInfo> chunksList) {
+		
+		FileInfo backupFile = new FileInfo(file.getName(), file.getPath(), fileID, replicationDegree, chunksList);
+		
+		peer.saveBackupInfo(backupFile);
 	}
 	
 	private void sendChunk(byte[] body, int chunkNo, int chunkLen) {
