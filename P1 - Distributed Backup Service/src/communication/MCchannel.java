@@ -133,9 +133,10 @@ public class MCchannel extends ChannelInformation implements Runnable{
 		DeleteMessage deleteMessage = new DeleteMessage(messageLength);
 		deleteMessage.parseMessage(message);
 		
-		System.out.println(deleteMessage.getFileId());
-		
-		//do smth
+		if(deleteMessage.getSenderId() == getPeer().getId()) {
+			return;		//itself
+		}
+		getPeer().deleteChunksOfFile(deleteMessage.getFileId());
 	}
 	
 	public void restoreConfirmedPeers() {

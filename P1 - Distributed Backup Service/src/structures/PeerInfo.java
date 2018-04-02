@@ -5,6 +5,9 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -106,7 +109,7 @@ public class PeerInfo {
 
 	}
 	
-	public static String initFileDir(ChunkInfo chunk) {
+	private static String initFileDir(ChunkInfo chunk) {
 		
 		String filePath = dirPath + "/" + chunk.getFileId();
 		
@@ -117,5 +120,36 @@ public class PeerInfo {
 		}
 		
 		return filePath;
+	}
+	
+	public static void deleteChunksOfFile(String fileID) {
+		
+		deleteFromArray(fileID);
+		deleteFromDir(fileID);
+	}
+	
+	private static void deleteFromArray(String fileID) {
+		
+		for(ChunkInfo chunk : savedChunks) {
+			if(chunk.getFileId().equals(fileID)) {
+				savedChunks.remove(chunk);
+			}
+		}
+	}
+	
+	private static void deleteFromDir(String fileID) {
+		
+		String filesPath = dirPath + "/" + fileID;
+		File dir = new File(filesPath);
+		
+		if(!dir.exists())
+			return;
+		
+		File[] allChunks = dir.listFiles();
+		
+		for(File chunk : allChunks) {
+			chunk.delete();
+		}
+		dir.delete();
 	}
 }
