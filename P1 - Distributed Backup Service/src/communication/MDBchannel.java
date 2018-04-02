@@ -84,7 +84,6 @@ public class MDBchannel extends ChannelInformation implements Runnable{
 		}
 		
 		saveChunk(receivedMessage);
-		
 		sendACK(receivedMessage.getProtocolVersion(), getPeer().getId(), receivedMessage.getFileId(), receivedMessage.getChunkNo());
 	}
 
@@ -93,6 +92,7 @@ public class MDBchannel extends ChannelInformation implements Runnable{
 		ChunkInfo chunk = new ChunkInfo(receivedMessage.getFileId(), receivedMessage.getChunkNo(),
 				receivedMessage.getBody());
 		getPeer().saveChunk(chunk);
+		
 		System.out.println(PeerInfo.getAvailableSpace());
 	}
 	

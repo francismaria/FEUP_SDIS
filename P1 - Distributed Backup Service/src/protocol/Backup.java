@@ -6,7 +6,11 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Base64;
 
 import communication.MCchannel;
 import communication.MDBchannel;
@@ -17,6 +21,7 @@ import structures.PeerInfo;
 public class Backup implements Runnable{
 	
 	private File file = null;
+	private String fileID = null;
 	private int replicationDegree;
 	
 	private final static long MAX_CHUNK_SIZE = 64000;
@@ -35,6 +40,15 @@ public class Backup implements Runnable{
 		this.replicationDegree = repDegree;
 		this.communicationChannel = communicationChannel;
 		this.backupChannel = backupChannel;
+		
+		MessageDigest digest;
+		try {
+			digest = MessageDigest.getInstance("SHA-256");
+			byte[] hashed = digest.digest(file.getName().getBytes(StandardCharsets.UTF_8));
+			this.fileID = Base64.getEncoder().encodeToString(hashed);
+		} catch (NoSuchAlgorithmException e) {
+			System.out.println("No such Algorithm");
+		}
 	}
 	
 	public void run() {
@@ -92,7 +106,7 @@ public class Backup implements Runnable{
 	
 	private void sendChunk(byte[] body, int chunkNo, int chunkLen) {
 		
-		PutchunkMessage messageInfo = new PutchunkMessage(peer.getProtocolVersion(), peer.getId(), "FILE_ID", 
+		PutchunkMessage messageInfo = new PutchunkMessage(peer.getProtocolVersion(), peer.getId(), this.fileID, 
 				chunkNo, replicationDegree, body, chunkLen);
 		
 		byte[] message = messageInfo.getMessageBytes();

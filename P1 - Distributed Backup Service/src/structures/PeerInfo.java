@@ -19,6 +19,8 @@ public class PeerInfo {
 	private static MDBchannel backupChannel;
 	private static MDRchannel restoreChannel;
 	
+	private static String dirPath;
+	
 	private static List<ChunkInfo> savedChunks = new ArrayList<ChunkInfo>();
 	
 	private static long diskSpace = 1000000;
@@ -36,7 +38,7 @@ public class PeerInfo {
 	private void initStorage() {
 		
 		//este tem de ser um path que dê em todos os PCS!!!   "/tmp/"
-		String dirPath = "/home/francisco/Desktop/Peer_" + peerID;
+		dirPath = "/home/francisco/Desktop/Peer_" + peerID;
 		File dir = new File(dirPath);
 		
 		if(!dir.exists()) {
@@ -86,18 +88,20 @@ public class PeerInfo {
 		usedSpace += chunk.getData().length;
 		
 
-/*		FileOutputStream stream;
+		FileOutputStream stream;
 		try {
-			stream = new FileOutputStream("/home/francisco/FEUP/SDIS/Files/myfile.jpg",true);
+			//stream = new FileOutputStream("/home/francisco/FEUP/SDIS/Files/myfile.jpg",true);
+			String chunkPath = dirPath + "/" + chunk.getChunkNo() + ".bin";
+			stream = new FileOutputStream(chunkPath);
 			stream.write(chunk.getData());
 			stream.close();
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.println("An error ocurred with the path to the chunk location.");
+			return;
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.println("Writing error");
+			return;
 		}
-*/
+
 	}
 }
