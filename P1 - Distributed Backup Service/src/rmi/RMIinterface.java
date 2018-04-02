@@ -12,7 +12,7 @@ public interface RMIinterface extends Remote{
 	
 	void delete(File file) throws RemoteException;
 	
-	void reclaim() throws RemoteException;
+	void reclaim(int diskSpace) throws RemoteException;
 	
 	void state() throws RemoteException;
 }

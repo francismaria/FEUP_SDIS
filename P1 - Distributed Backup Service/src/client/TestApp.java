@@ -16,13 +16,18 @@ import exceptions.*;
 public class TestApp {
 	
 	private static File file = null;
-	private static String fileID = null;
 	
 	private static byte[] fileBytes = null;
 	
 	private static String command = null;
 	private static String remoteObjName = null;
+	
+	//BACKUP
 	private static int replicationDegree = 0;
+	
+	//RECLAIM
+	private static int diskSpace = 0;
+	
 	private static RMIinterface stub = null;
 	
 	public static void main(String[] args) throws RemoteException, NotBoundException {
@@ -46,6 +51,12 @@ public class TestApp {
 			break;
 		case "DELETE":
 			stub.delete(file);
+			break;
+		case "RECLAIM":
+			stub.reclaim(diskSpace);
+			break;
+		case "STATE":
+			stub.state();
 		default:
 			break;
 		}
@@ -146,6 +157,9 @@ public class TestApp {
 			return false;
 		}
 		
+		remoteObjName = args[0];
+		command = args[1];
+		diskSpace = Integer.parseInt(args[2]);
 		return true;
 	}
 	
@@ -157,11 +171,9 @@ public class TestApp {
 			return false;
 		}
 		
+		remoteObjName = args[0];
+		command = args[1];
 		return true;
-	}
-	
-	private static boolean matchesFileName(String input) {
-		return input.matches("[a-zA-Z0-9]+.[a-zA-Z0-9]+");
 	}
 
 }

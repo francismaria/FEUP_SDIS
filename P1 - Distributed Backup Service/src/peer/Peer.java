@@ -12,7 +12,9 @@ import communication.*;
 import exceptions.InvalidArgumentsException;
 import protocol.Backup;
 import protocol.Delete;
+import protocol.Reclaim;
 import protocol.Restore;
+import protocol.State;
 import rmi.RMIinterface;
 import structures.PeerInfo;
 
@@ -142,13 +144,14 @@ public class Peer implements RMIinterface{
 	}
 
 	@Override
-	public void reclaim() throws RemoteException {
+	public void reclaim(int diskSpace) throws RemoteException {
 		
-		//reclaim
+		(new Thread(new Reclaim(info, diskSpace))).start();
 	}
 
 	@Override
 	public void state() throws RemoteException {
-		//state
+		
+		(new Thread(new State(info))).start();
 	}
 }
