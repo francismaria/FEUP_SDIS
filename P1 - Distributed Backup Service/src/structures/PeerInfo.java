@@ -1,5 +1,6 @@
 package structures;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -29,6 +30,19 @@ public class PeerInfo {
 		this.communicationChannel = communication;
 		this.backupChannel = backup;
 		this.restoreChannel = restore;
+		initStorage();
+	}
+	
+	private void initStorage() {
+		
+		//este tem de ser um path que dê em todos os PCS!!!   "/tmp/"
+		String dirPath = "/home/francisco/Desktop/Peer_" + peerID;
+		File dir = new File(dirPath);
+		
+		if(!dir.exists()) {
+			dir.mkdir();
+		}
+		//else ler o que lá está
 	}
 
 	public static int getId() {
@@ -70,6 +84,8 @@ public class PeerInfo {
 	public static void saveChunk(ChunkInfo chunk) {
 		savedChunks.add(chunk);
 		usedSpace += chunk.getData().length;
+		
+
 /*		FileOutputStream stream;
 		try {
 			stream = new FileOutputStream("/home/francisco/FEUP/SDIS/Files/myfile.jpg",true);
