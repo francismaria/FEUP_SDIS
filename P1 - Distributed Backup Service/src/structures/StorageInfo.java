@@ -175,4 +175,14 @@ public class StorageInfo {
 		}
 		return null;
 	}
+
+	public ChunkInfo getChunk(String fileID, int chunkNo) {
+		
+		for(ChunkInfo chunk : savedChunks) {
+			if(chunk.getFileId().equals(fileID) && chunk.getChunkNo() == chunkNo) {
+				return chunk;
+			}
+		}
+		return null;
+	}
 }

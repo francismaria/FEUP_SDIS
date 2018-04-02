@@ -6,6 +6,8 @@ public class ChunkInfo {
 	private String fileID;
 	private int chunkNo;
 	
+	public ChunkInfo() {}
+	
 	public ChunkInfo(String fileID, int chunkNo, byte[] data) {
 		this.fileID = fileID;
 		this.chunkNo = chunkNo;

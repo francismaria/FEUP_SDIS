@@ -43,23 +43,19 @@ public class MDRchannel extends ChannelInformation implements Runnable{
 			
 			switch(type) {
 				case "CHUNK":
-					parseCHUNKMessage(buf);
+					parseCHUNKMessage(buf, packet.getLength());
 				default:
 					break;
 			}
-		/*
-			String receivedInfo = new String(packet.getData(), 0, packet.getLength());
-			System.out.println(receivedInfo);
-		*/
 		}
 	}
 	
-	private void parseCHUNKMessage(byte[] message) {
+	private void parseCHUNKMessage(byte[] message, int messageLength) {
 		
-		ChunkMessage chunk = new ChunkMessage();
+		ChunkMessage chunk = new ChunkMessage(messageLength);
 		chunk.parseMessage(message);
 		
-		System.out.println("CHEGOU AO PEER DO MDR.: -- " + chunk.getType() + " " + chunk.getProtocolVersion());
+		
 	}
 	
 	public void joinChannel(InetAddress groupAddress, int port) {

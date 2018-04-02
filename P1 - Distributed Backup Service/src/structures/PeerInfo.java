@@ -89,4 +89,8 @@ public class PeerInfo {
 		
 		return "to String method";
 	}
+
+	public static ChunkInfo getDesiredChunk(String fileID, int chunkNo) {
+		return storage.getChunk(fileID, chunkNo);
+	}
 }

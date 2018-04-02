@@ -59,8 +59,6 @@ public class PutchunkMessage extends Message{
 		int headerLength = getHeaderLength(message) + 1;		//includes '0xD' '0xA'
 		bodyLength = message.length - headerLength;
 		
-		System.out.println("PUTCHUNK: " + headerLength);
-		
 		if(headerLength == 0) {
 			System.out.println("Unable to read header.");
 			return;

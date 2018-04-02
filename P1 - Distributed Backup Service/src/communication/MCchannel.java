@@ -11,6 +11,7 @@ import messages.ChunkMessage;
 import messages.DeleteMessage;
 import messages.GetchunkMessage;
 import messages.StoredMessage;
+import structures.ChunkInfo;
 import structures.PeerInfo;
 
 public class MCchannel extends ChannelInformation implements Runnable{
@@ -64,7 +65,7 @@ public class MCchannel extends ChannelInformation implements Runnable{
 					parseSTOREDMessage(buf);
 					break;
 				case "GETCHUNK":
-					parseGETCHUNKMessage(buf);
+					parseGETCHUNKMessage(buf, packet.getLength());
 					break;
 				case "DELETE":
 					parseDELETEMessage(buf, packet.getLength());
@@ -91,30 +92,32 @@ public class MCchannel extends ChannelInformation implements Runnable{
 		confirmedPeers.add(receivingACK);
 	}
 	
-	private void parseGETCHUNKMessage(byte[] message) {
+	private void parseGETCHUNKMessage(byte[] message, int messageLength) {
 		
-		GetchunkMessage receivingRequest = new GetchunkMessage();
+		GetchunkMessage receivingRequest = new GetchunkMessage(messageLength);
 		receivingRequest.parseMessage(message);
-		/*
+		
 		if(receivingRequest.getSenderId() == getPeer().getId()) {
 			return;
-		}*/
+		}
 		
-		//se n tiver o chunk requisitado : return;
+		ChunkInfo chunk = getPeer().getDesiredChunk(receivingRequest.getFileId(), receivingRequest.getChunkNo());
+				
 		try {
 			Thread.sleep((long)Math.random()*401);
 		} catch (InterruptedException e) {
 			System.out.println("Thread was interrupted while sleeping.");
 		}
 		
-		sendCHUNKmessage(receivingRequest.getProtocolVersion(), getPeer().getId(), receivingRequest.getFileId(), 0);
+		sendCHUNKmessage(receivingRequest, chunk.getData());
 	}
 	
-	private void sendCHUNKmessage(String protocolVersion, int peerID, String fileID, int chunkNo) {
+	private void sendCHUNKmessage(GetchunkMessage receivingRequest, byte[] data) {
 		
-		byte[] exemplo = "ISTO É UM ACK SE TIVER.".getBytes();
+		ChunkMessage ackMessage = new ChunkMessage(receivingRequest.getProtocolVersion(), 
+				receivingRequest.getSenderId(), receivingRequest.getFileId(),
+				receivingRequest.getChunkNo(), data, data.length);
 		
-		ChunkMessage ackMessage = new ChunkMessage(protocolVersion, peerID, fileID, chunkNo, exemplo);
 		byte[] message = ackMessage.getMessageBytes();
 		
 		DatagramPacket packet = new DatagramPacket(message, message.length,

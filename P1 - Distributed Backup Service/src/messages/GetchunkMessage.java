@@ -3,11 +3,14 @@ package messages;
 public class GetchunkMessage extends Message {
 
 	private int chunkNo;
+	private int messageLength;
 	private byte[] message;
 	
-	public GetchunkMessage() {
+	public GetchunkMessage(int messageLength) {
 		super();	
+		this.messageLength = messageLength;
 		this.chunkNo = 0;
+		this.message = new byte[messageLength];
 	}
 
 	public GetchunkMessage(String version, int senderID, String fileID, int chunkNo) {
@@ -31,7 +34,7 @@ public class GetchunkMessage extends Message {
 	
 	public void parseMessage(byte[] message) {
 		
-		this.message = message;
+		System.arraycopy(message, 0, this.message, 0, messageLength);
 		
 		int headerLength = getHeaderLength(message);
 		
@@ -41,7 +44,6 @@ public class GetchunkMessage extends Message {
 		}
 		
 		byte[] header = new byte[headerLength];
-		
 		System.arraycopy(message, 0, header, 0, headerLength);
 		
 		String headerString = new String(header);
@@ -58,4 +60,7 @@ public class GetchunkMessage extends Message {
 		return message;
 	}
 	
+	public int getChunkNo() {
+		return chunkNo;
+	}
 }

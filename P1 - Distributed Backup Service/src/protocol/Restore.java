@@ -64,12 +64,12 @@ public class Restore implements Runnable{
 		DatagramPacket packet = new DatagramPacket(message, message.length, communicationChannel.getGroupAddress(),
 				communicationChannel.getPort());
 		System.out.println(packet.getLength());
-		/*
+		
 		try {
 			communicationSocket.send(packet);
 		} catch (IOException e) {
 			System.out.println("Unable to send packet");
-		}*/
+		}
 	}
 	
 	private void initSocket() {

@@ -3,22 +3,26 @@ package messages;
 public class ChunkMessage extends Message {
 	
 	private int chunkNo;
-	private byte[] body = new byte[Message.MAX_HEADER_SIZE];
-	private byte[] message = new byte[Message.MAX_HEADER_SIZE + Message.MAX_BODY_SIZE];
+	private int bodyLength;
+	private byte[] body;
+	private byte[] message;
 	
-	public ChunkMessage() {
+	public ChunkMessage(int messageLength) {
 		super();
 		
+		this.message = new byte[messageLength];
 		this.chunkNo = 0;
 		this.body = null;
 	}
 	
-	public ChunkMessage(String version, int senderID, String fileID, int chunkNo, byte[] body) {
+	public ChunkMessage(String version, int senderID, String fileID, int chunkNo, byte[] body, int bodyLength) {
 		
 		super("CHUNK", version, senderID, fileID);
 		
 		this.chunkNo = chunkNo;
-		this.body = body;
+		this.body = new byte[bodyLength];
+		System.arraycopy(body, 0, this.body, 0, bodyLength);
+		this.bodyLength = bodyLength;
 		
 		constructMessage();
 	}
@@ -30,17 +34,19 @@ public class ChunkMessage extends Message {
 		
 		byte[] header = headerString.getBytes();
 		
+		this.message = new byte[header.length + 2 + bodyLength];
+		
 		System.arraycopy(header, 0, message, 0, header.length);
 		System.arraycopy(delimiters, 0, message, header.length, delimiters.length);
-		System.arraycopy(body, 0, message, Message.MAX_HEADER_SIZE, body.length);
+		System.arraycopy(body, 0, message, header.length+2, body.length);
 	}
 	
 	public void parseMessage(byte[] message) {
 		
-		this.message = message;
+		System.arraycopy(message, 0, this.message, 0, this.message.length);
 		
-		int headerLength = getHeaderLength(message);
-		int bodyLength = message.length - Message.MAX_HEADER_SIZE;
+		int headerLength = getHeaderLength(message)+1;
+		int bodyLength = message.length - headerLength;
 		
 		if(headerLength == 0) {
 			System.out.println("Unable to read header.");
@@ -48,10 +54,10 @@ public class ChunkMessage extends Message {
 		}
 		
 		byte[] header = new byte[headerLength];
-		body = new byte[MAX_BODY_SIZE];
+		body = new byte[bodyLength];
 		
-		System.arraycopy(message, 0, header, 0, headerLength);
-		System.arraycopy(message, headerLength, body, 0, bodyLength);
+		System.arraycopy(this.message, 0, header, 0, headerLength);
+		System.arraycopy(this.message, headerLength, body, 0, bodyLength);
 		
 		String headerString = new String(header);
 		String[] parsedHeader = headerString.split(" +");
@@ -65,5 +71,9 @@ public class ChunkMessage extends Message {
 	
 	public byte[] getMessageBytes() {
 		return message;
+	}
+	
+	public byte[] getBody() {
+		return body;
 	}
 }
