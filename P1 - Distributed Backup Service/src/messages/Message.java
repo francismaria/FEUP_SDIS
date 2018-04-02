@@ -70,7 +70,7 @@ public abstract class Message {
 			if(message[i] == (byte)0xD) {
 				i++;
 				if(message[i] == (byte)0xA) {
-					return i;
+					return i; 	//tem de ser return i+1
 				}
 				else {
 					i--;

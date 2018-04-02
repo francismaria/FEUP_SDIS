@@ -71,10 +71,11 @@ public class MDBchannel extends ChannelInformation implements Runnable{
 		receivedMessage.parseMessageBytes(message);
 		
 		System.out.println(receivedMessage.getBody().length + "-----BODY received");
-		/*
-		if(receivedMessage.getSenderId() == getPeer().getId() || n tem espaço no disco) {
+		
+		if(receivedMessage.getSenderId() == getPeer().getId()) {
+			System.out.println("This peer is the initiator-peer");
 			return;			//it does not accepts messages from itself
-		}*/
+		}
 		
 		if(receivedMessage.getBody().length > getPeer().getAvailableSpace()) {
 			System.out.println("This peer hasn't got sufficient disk space to save this chunk: " + receivedMessage.getFileId() + " "

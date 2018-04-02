@@ -70,7 +70,7 @@ public class PeerInfo {
 	public static void saveChunk(ChunkInfo chunk) {
 		savedChunks.add(chunk);
 		usedSpace += chunk.getData().length;
-		FileOutputStream stream;
+/*		FileOutputStream stream;
 		try {
 			stream = new FileOutputStream("/home/francisco/FEUP/SDIS/Files/myfile.jpg",true);
 			stream.write(chunk.getData());
@@ -82,6 +82,6 @@ public class PeerInfo {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
+*/
 	}
 }
