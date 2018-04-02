@@ -1,8 +1,6 @@
 package messages;
 
 public class PutchunkMessage extends Message{
-
-	private final static long MAX_MSG_SIZE = Message.MAX_HEADER_SIZE + Message.MAX_BODY_SIZE;
 	
 	private byte[] message;
 	
@@ -11,14 +9,15 @@ public class PutchunkMessage extends Message{
 	private byte[] body;
 	private int bodyLength;
 	
-	public PutchunkMessage(int totalLength) {
+	public PutchunkMessage(int messageLength) {
 		
 		super();
 		
 		this.chunkNo = 0;
 		this.replicationDegree = 0;
 		this.body = null;
-		this.bodyLength = totalLength - Message.MAX_HEADER_SIZE;
+		this.message = new byte[messageLength];
+		//this.bodyLength = messageLength - Message.MAX_HEADER_SIZE;
 	}
 	
 	public PutchunkMessage(String version, int senderID, String fileID, int chunkNo,
@@ -28,7 +27,8 @@ public class PutchunkMessage extends Message{
 		
 		this.chunkNo = chunkNo;
 		this.replicationDegree = replicationDegree;
-		this.body = body;
+		this.body = new byte[bodyLength];
+		System.arraycopy(body, 0, this.body, 0, bodyLength);
 		this.bodyLength = bodyLength;
 		
 		constructMessage();
@@ -41,24 +41,26 @@ public class PutchunkMessage extends Message{
 		
 		byte[] header = headerString.getBytes();
 		
-		this.message = new byte[MAX_HEADER_SIZE + bodyLength];
+		this.message = new byte[header.length + 2 + bodyLength];
 		
 		System.arraycopy(header, 0, message, 0, header.length);
 		System.arraycopy(delimiters, 0, message, header.length, delimiters.length);
-		System.arraycopy(body, 0, message, MAX_HEADER_SIZE, /*body.length*/bodyLength);
+		System.arraycopy(body, 0, message, header.length+2, bodyLength);
 	}
 	
 	public void parseMessageBytes(byte[] message) {
 		
-		this.message = message;
+		System.arraycopy(message, 0, this.message, 0, this.message.length);
 		
 		parseMessage();
 	}
 	
 	private void parseMessage(){
 		
-		int headerLength = getHeaderLength(message);
-		//int bodyLength = message.length - Message.MAX_HEADER_SIZE;
+		int headerLength = getHeaderLength(message) + 1;		//includes '0xD' '0xA'
+		bodyLength = message.length - headerLength;
+		
+		System.out.println("PUTCHUNK: " + headerLength);
 		
 		if(headerLength == 0) {
 			System.out.println("Unable to read header.");

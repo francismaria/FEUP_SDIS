@@ -70,14 +70,14 @@ public class MDBchannel extends ChannelInformation implements Runnable{
 		PutchunkMessage receivedMessage = new PutchunkMessage(messageLength);
 		receivedMessage.parseMessageBytes(message);
 		
-		System.out.println(receivedMessage.getBody().length);
+		System.out.println(receivedMessage.getBody().length + "-----BODY received");
 		/*
 		if(receivedMessage.getSenderId() == getPeer().getId() || n tem espaço no disco) {
 			return;			//it does not accepts messages from itself
 		}*/
 		
 		if(receivedMessage.getBody().length > getPeer().getAvailableSpace()) {
-			System.out.println("This peer hasn't got sufficient space to save this chunk: " + receivedMessage.getFileId() + " "
+			System.out.println("This peer hasn't got sufficient disk space to save this chunk: " + receivedMessage.getFileId() + " "
 					+ "" + receivedMessage.getChunkNo());
 			return;
 		}
