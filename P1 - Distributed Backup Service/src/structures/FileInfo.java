@@ -26,6 +26,15 @@ public class FileInfo {
 	public String getName() {
 		return name;
 	}
+	
+	public String getPath() {
+		return path;
+	}
+	
+	public String getFileId() {
+		return fileID;
+	}
+	
 	@Override
 	public String toString() {
 		String ret = path + " " + fileID + " " + replicationDegree;

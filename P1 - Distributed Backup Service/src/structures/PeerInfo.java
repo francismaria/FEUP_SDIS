@@ -81,6 +81,10 @@ public class PeerInfo {
 		storage.saveBackup(file);
 	}
 	
+	public FileInfo getFileInfo(String filePath) {
+		return storage.getFileInfo(filePath);
+	}
+	
 	public String toString() {
 		
 		return "to String method";

@@ -8,7 +8,7 @@ public interface RMIinterface extends Remote{
 	
 	void backup(File file, int replicationDegree) throws RemoteException;
 	
-	void restore(File file) throws RemoteException;
+	void restore(String fileName) throws RemoteException;
 	
 	void delete(File file) throws RemoteException;
 	

@@ -107,7 +107,6 @@ public class Backup implements Runnable{
 				
 				BackupChunkInfo chunkInfo = new BackupChunkInfo(chunkNo,
 						communicationChannel.getConfirmedPeers());
-				System.out.println(chunkInfo);
 				allChunkInfo.add(chunkInfo);
 				chunkNo++;
 				communicationChannel.restoreConfirmedPeers();

@@ -24,6 +24,7 @@ public class StorageInfo {
 	private static String chunkDirPath;
 	
 	private static List<ChunkInfo> savedChunks = new ArrayList<ChunkInfo>();
+	private static List<FileInfo> backedUpFiles = new ArrayList<FileInfo>();
 	
 	public StorageInfo(int peerID) {
 		this.peerID = peerID;
@@ -76,7 +77,6 @@ public class StorageInfo {
 		
 		FileOutputStream stream;
 		try {
-			//stream = new FileOutputStream("/home/francisco/FEUP/SDIS/Files/myfile.jpg",true);
 			String chunkPath = filePath + "/" + chunk.getChunkNo() + ".bin";
 			stream = new FileOutputStream(chunkPath);
 			stream.write(chunk.getData());
@@ -136,6 +136,8 @@ public class StorageInfo {
 	
 	public void saveBackup(FileInfo fileInfo) {
 		
+		backedUpFiles.add(fileInfo);
+	
 		String filePath = backupDirPath + "/" + fileInfo.getName() + ".txt";
 		List<String> lines = Arrays.asList(fileInfo.toString());
 		
@@ -162,5 +164,15 @@ public class StorageInfo {
 	
 	public List<ChunkInfo> getStoredChunks(){
 		return savedChunks;
+	}
+	
+	public FileInfo getFileInfo(String filePath) {
+		
+		for(FileInfo f : backedUpFiles) {
+			if(f.getPath().equals(filePath)) {
+				return f;
+			}
+		}
+		return null;
 	}
 }

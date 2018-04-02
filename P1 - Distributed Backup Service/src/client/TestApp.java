@@ -21,6 +21,7 @@ public class TestApp {
 	
 	private static String command = null;
 	private static String remoteObjName = null;
+	private static String fileName = null;
 	
 	//BACKUP
 	private static int replicationDegree = 0;
@@ -47,7 +48,7 @@ public class TestApp {
 			stub.backup(file, replicationDegree);
 			break;
 		case "RESTORE":
-			stub.restore(file);
+			stub.restore(fileName);
 			break;
 		case "DELETE":
 			stub.delete(file);
@@ -118,16 +119,18 @@ public class TestApp {
 			return false;
 		 }
 		
-		file = new File(args[2]);
+		//file = new File(args[2]);
 		
-		if(file.exists() && !file.isDirectory()) {
+		//if(file.exists() && !file.isDirectory()) {
+			
 			remoteObjName = args[0];
 			command = args[1];
+			fileName = args[2];
 			return true;
-		}
+		//}
 		
-		System.out.println("File was not found/accepted");
-		return false;
+		//System.out.println("File was not found/accepted");
+		//return false;
 	}
 	
 	public static boolean checkDeleteArgs(String[] args) {

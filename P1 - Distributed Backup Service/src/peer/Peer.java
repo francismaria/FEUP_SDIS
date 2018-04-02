@@ -133,9 +133,9 @@ public class Peer implements RMIinterface{
 	}
 
 	@Override
-	public void restore(File file) throws RemoteException {
+	public void restore(String fileName) throws RemoteException {
 		 
-		(new Thread(new Restore(info, file, communicationChannel, restoreChannel))).start();
+		(new Thread(new Restore(info, fileName, communicationChannel, restoreChannel))).start();
 	}
 
 	@Override

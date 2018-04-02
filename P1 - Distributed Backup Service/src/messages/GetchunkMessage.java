@@ -3,7 +3,7 @@ package messages;
 public class GetchunkMessage extends Message {
 
 	private int chunkNo;
-	private byte[] message = new byte[Message.MAX_HEADER_SIZE];
+	private byte[] message;
 	
 	public GetchunkMessage() {
 		super();	
@@ -20,9 +20,10 @@ public class GetchunkMessage extends Message {
 	private void constructMessage() {
 		
 		String headerString = getType() + " " + getProtocolVersion() + " " + Integer.toString(getSenderId()) + " "
-				+ "" + "FILE_ID" + " " + Integer.toString(chunkNo);
+				+ "" + getFileId() + " " + Integer.toString(chunkNo);
 		
 		byte[] header = headerString.getBytes();
+		message = new byte[header.length + 2];
 		
 		System.arraycopy(header, 0, message, 0, header.length);
 		System.arraycopy(delimiters, 0, message, header.length, delimiters.length);
