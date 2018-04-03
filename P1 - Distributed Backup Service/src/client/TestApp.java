@@ -117,19 +117,11 @@ public class TestApp {
 					+ "RESTORE fileName");
 			return false;
 		 }
-		
-		//file = new File(args[2]);
-		
-		//if(file.exists() && !file.isDirectory()) {
-			
-			remoteObjName = args[0];
-			command = args[1];
-			fileName = args[2];
-			return true;
-		//}
-		
-		//System.out.println("File was not found/accepted");
-		//return false;
+
+		remoteObjName = args[0];
+		command = args[1];
+		fileName = args[2];
+		return true;
 	}
 	
 	public static boolean checkDeleteArgs(String[] args) {

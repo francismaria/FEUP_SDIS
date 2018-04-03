@@ -63,10 +63,10 @@ public class MDRchannel extends ChannelInformation implements Runnable{
 		ChunkMessage chunk = new ChunkMessage(messageLength);
 		chunk.parseMessage(message);
 		
-		/*if(hasChunk(chunk.getFileId(), chunk.getChunkNo())) {
+		if(hasChunk(chunk.getFileId(), chunk.getChunkNo())) {
 			return;					//discards repeated chunks
 		}
-		*/
+		
 		ChunkInfo info = new ChunkInfo(chunk.getFileId(), chunk.getChunkNo(), chunk.getBody());
 		receivedChunks.add(info);
 	}

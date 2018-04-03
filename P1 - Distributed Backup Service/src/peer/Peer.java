@@ -36,8 +36,14 @@ public class Peer implements RMIinterface{
 			throw new InvalidArgumentsException("peer");
 		}
 		
+		
 		initRMIservice();
+		initBackupInfo();
 		startListeningChannels();
+		
+	}
+	
+	public static void initBackupInfo() {
 		
 	}
 	

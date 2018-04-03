@@ -47,15 +47,15 @@ public class Restore implements Runnable{
 
 		while(i < numberOfChunks) {
 			
-			//while(!restoreChannel.hasChunk(fileInfo.getFileId(), i)) {
+			while(!restoreChannel.hasChunk(fileInfo.getFileId(), i)) {
 				sendGetchunkRequest(fileInfo.getFileId(), i);	
 				try {
-					Thread.sleep(500);
+					Thread.sleep(200);
 				} catch (InterruptedException e) {
 					System.out.println("Error occurred during thread sleeping.");
 					continue;
 				}
-			//}
+			}
 			i++;
 		}
 		
