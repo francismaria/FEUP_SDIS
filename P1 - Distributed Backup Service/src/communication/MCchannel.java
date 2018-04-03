@@ -123,12 +123,16 @@ public class MCchannel extends ChannelInformation implements Runnable{
 		DatagramPacket packet = new DatagramPacket(message, message.length,
 				getPeer().getRestoreChannel().getGroupAddress(), 
 				getPeer().getRestoreChannel().getPort());
-		
+
 		try {
+			long randomTime = (long)(Math.random()*401);
+			Thread.sleep(randomTime);
 			MDRchannelSocket.send(packet);
 		} catch (IOException e) {
 			System.out.println("Unable to send packet through MDR channel");
-		}
+		} catch (InterruptedException e) {
+			System.out.println("Error ocurred in sleeping.");
+		}	
 	}
 	
 	private void parseDELETEMessage(byte[] message, int messageLength) {

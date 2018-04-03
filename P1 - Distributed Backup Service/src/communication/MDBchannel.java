@@ -70,8 +70,6 @@ public class MDBchannel extends ChannelInformation implements Runnable{
 		PutchunkMessage receivedMessage = new PutchunkMessage(messageLength);
 		receivedMessage.parseMessageBytes(message);
 		
-		System.out.println(receivedMessage.getBody().length + "-----BODY received");
-		
 		if(receivedMessage.getSenderId() == getPeer().getId()) {
 			System.out.println("This peer is the initiator-peer");
 			return;			//it does not accepts messages from itself

@@ -15,7 +15,8 @@ public class ChunkMessage extends Message {
 		this.body = null;
 	}
 	
-	public ChunkMessage(String version, int senderID, String fileID, int chunkNo, byte[] body, int bodyLength) {
+	public ChunkMessage(String version, int senderID, String fileID, int chunkNo,
+			byte[] body, int bodyLength) {
 		
 		super("CHUNK", version, senderID, fileID);
 		
@@ -45,8 +46,8 @@ public class ChunkMessage extends Message {
 		
 		System.arraycopy(message, 0, this.message, 0, this.message.length);
 		
-		int headerLength = getHeaderLength(message)+1;
-		int bodyLength = message.length - headerLength;
+		int headerLength = getHeaderLength(message) + 1;
+		bodyLength = this.message.length - headerLength;
 		
 		if(headerLength == 0) {
 			System.out.println("Unable to read header.");

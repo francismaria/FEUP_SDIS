@@ -13,6 +13,8 @@ public class MDRchannel extends ChannelInformation implements Runnable{
 	
 	private static MulticastSocket socket;
 	
+	private final static long MAX_MSG_SIZE = 65024;
+	
 	public MDRchannel(PeerInfo peer, String ipAddress, int port) throws UnknownHostException {
 		super(peer, ipAddress, port);
 	}
@@ -30,7 +32,7 @@ public class MDRchannel extends ChannelInformation implements Runnable{
 		
 		while(running) {
 			
-			buf = new byte[2048];
+			buf = new byte[(int)MAX_MSG_SIZE];
 			packet = new DatagramPacket(buf, buf.length);
 			
 			try {
@@ -55,7 +57,9 @@ public class MDRchannel extends ChannelInformation implements Runnable{
 		ChunkMessage chunk = new ChunkMessage(messageLength);
 		chunk.parseMessage(message);
 		
-		
+
+		System.out.println("LENGTH:  ------------" + messageLength);
+		System.out.println(chunk.getBody().length);
 	}
 	
 	public void joinChannel(InetAddress groupAddress, int port) {
