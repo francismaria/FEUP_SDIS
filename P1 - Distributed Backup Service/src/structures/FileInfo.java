@@ -8,13 +8,15 @@ public class FileInfo {
 	private String name;
 	private String path;
 	private String fileID;
+	private long bytes;
 	private int replicationDegree;
 	private List<BackupChunkInfo> chunksInfo = new ArrayList<BackupChunkInfo>();
 	
-	public FileInfo(String name, String path, String fileID, int replicationDegree, List<BackupChunkInfo> chunksInfo) {
+	public FileInfo(String name, String path, String fileID, long bytes, int replicationDegree, List<BackupChunkInfo> chunksInfo) {
 		this.name = name;
 		this.path = path;
 		this.fileID = fileID;
+		this.bytes = bytes;
 		this.replicationDegree = replicationDegree;
 		this.chunksInfo = chunksInfo;
 	}
@@ -33,6 +35,10 @@ public class FileInfo {
 	
 	public String getFileId() {
 		return fileID;
+	}
+	
+	public long getBytes() {
+		return bytes;
 	}
 	
 	@Override

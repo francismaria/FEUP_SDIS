@@ -95,8 +95,7 @@ public class TestApp {
 		try {
 			fileBytes = Files.readAllBytes(file.toPath());
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.println("No file was found in the given path.");
 		}
 		
 		if(file.exists() && !file.isDirectory()) {

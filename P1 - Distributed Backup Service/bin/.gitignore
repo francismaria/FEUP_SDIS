@@ -1,7 +1,3 @@
-/structures/
-/communication/
-/peer/
 /protocol/
-/messages/
 /client/
-/rmi/
+/structures/

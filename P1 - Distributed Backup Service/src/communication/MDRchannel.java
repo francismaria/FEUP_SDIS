@@ -34,6 +34,8 @@ public class MDRchannel extends ChannelInformation implements Runnable{
 		
 		joinChannel(getGroupAddress(), getPort());
 		
+		System.out.println("Connection Established: MDR CHANNEL");
+		
 		while(running) {
 			
 			buf = new byte[(int)MAX_MSG_SIZE];
@@ -61,10 +63,10 @@ public class MDRchannel extends ChannelInformation implements Runnable{
 		ChunkMessage chunk = new ChunkMessage(messageLength);
 		chunk.parseMessage(message);
 		
-		//if already has discard...
-		
-		
-		
+		/*if(hasChunk(chunk.getFileId(), chunk.getChunkNo())) {
+			return;					//discards repeated chunks
+		}
+		*/
 		ChunkInfo info = new ChunkInfo(chunk.getFileId(), chunk.getChunkNo(), chunk.getBody());
 		receivedChunks.add(info);
 	}
@@ -81,10 +83,18 @@ public class MDRchannel extends ChannelInformation implements Runnable{
 		}
 	}
 	
-	public byte[] getChunkData(String fileID, int chunkNo) {
-		System.out.println("ENTROU");
+	public boolean hasChunk(String fileID, int chunkNo) {
 		for(ChunkInfo chunk : receivedChunks) {
-			System.out.println("CHUNK------ " + chunk.getFileId() + " " + chunk.getChunkNo());
+			if(chunk.getFileId().equals(fileID) && chunk.getChunkNo() == chunkNo) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public byte[] getChunkData(String fileID, int chunkNo) {
+		
+		for(ChunkInfo chunk : receivedChunks) {
 			if(chunk.getFileId().equals(fileID) && chunk.getChunkNo() == chunkNo) {
 				return chunk.getData();
 			}

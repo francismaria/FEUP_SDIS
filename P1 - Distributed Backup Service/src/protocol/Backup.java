@@ -82,9 +82,9 @@ public class Backup implements Runnable{
 				long timeout = 1000;
 				
 				while(i < MAX_ATTEMPTS) {
-				
-					sendChunk(chunk, chunkNo, chunkLen);
 					
+					sendChunk(chunk, chunkNo, chunkLen);
+
 					Thread.sleep(timeout);
 					
 					if(communicationChannel.getConfirmedPeers() >= replicationDegree) {
@@ -126,7 +126,8 @@ public class Backup implements Runnable{
 	
 	private void saveFileInfo(List<BackupChunkInfo> chunksList) {
 		
-		FileInfo backupFile = new FileInfo(file.getName(), file.getPath(), fileID, replicationDegree, chunksList);
+		FileInfo backupFile = new FileInfo(file.getName(), file.getPath(),
+				fileID, file.length(), replicationDegree, chunksList);
 		
 		peer.saveBackupInfo(backupFile);
 	}

@@ -47,31 +47,43 @@ public class Restore implements Runnable{
 
 		while(i < numberOfChunks) {
 			
-			sendGetchunkRequest(fileInfo.getFileId(), i);	
-			try {
-				Thread.sleep(500);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			//while(!restoreChannel.hasChunk(fileInfo.getFileId(), i)) {
+				sendGetchunkRequest(fileInfo.getFileId(), i);	
+				try {
+					Thread.sleep(500);
+				} catch (InterruptedException e) {
+					System.out.println("Error occurred during thread sleeping.");
+					continue;
+				}
+			//}
 			i++;
 		}
 		
-		joinAllChunks(fileInfo.getFileId(), numberOfChunks);
+		joinAllChunks(fileInfo.getFileId(), (int)fileInfo.getBytes(), numberOfChunks);
 	}
 	
-	private void joinAllChunks(String fileID, int numberOfChunks) {
+	private void joinAllChunks(String fileID, int fileLength, int numberOfChunks) {
 		
-		byte[] file = new byte[2000000];
+		int DATA_SIZE;
+		byte[] file = new byte[fileLength];
 		int lastPos = 0;
 		
 		for(int i = 0; i < numberOfChunks; i++) {
-			byte[] data = new byte[65024];
+			
+			if(i == (numberOfChunks-1)) {
+				DATA_SIZE = fileLength - lastPos;
+			}else {
+				DATA_SIZE = 64000;		//MAX_CHUNK_SIZE
+			}
+			
+			byte[] data = new byte[DATA_SIZE];
 			
 			data = restoreChannel.getChunkData(fileID, i);
-			if(data == null) continue;
 			
-			System.out.println(data.length +"asasdsfs");
+			if(data == null) {
+				System.out.println("An error occurred. No chunk found. Unable to restore file.");
+				return;
+			}
 			
 			System.arraycopy(data, 0, file, lastPos, data.length);
 			lastPos += data.length;
