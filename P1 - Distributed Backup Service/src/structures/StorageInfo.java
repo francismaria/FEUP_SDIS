@@ -190,7 +190,7 @@ public class StorageInfo {
 		
 		FileOutputStream stream;
 		try {
-			String path = filePath + ".jpg";
+			String path = filePath;
 			stream = new FileOutputStream(path);
 			stream.write(data);
 			stream.close();
