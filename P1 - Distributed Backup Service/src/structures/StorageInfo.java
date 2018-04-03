@@ -207,7 +207,7 @@ public class StorageInfo {
 		String ret = "";
 		
 		for(FileInfo backup : backedUpFiles) {
-			ret += "File info:\n\tPathname: " + backup.getPath() + "\n\tDesired Replication Degree: "
+			ret += "FILE INFO:\n\tPathname: " + backup.getPath() + "\n\tDesired Replication Degree: "
 					+ "" + backup.getReplicationDegree() + "\n\tNumber of Chunks: " + backup.getNumberOfChunks();
 		}
 		
@@ -215,6 +215,22 @@ public class StorageInfo {
 	}
 
 	public String getStoredChunksInfo() {
-		return "";
+		String ret = "\n";
+		
+		for(ChunkInfo chunk : savedChunks) {
+			ret += "CHUNKS INFO:\n\tID: " + chunk.getChunkNo() + ""
+					+ "\n\tFile ID: " + chunk.getFileId() + ""
+					+ "\n\tSize: " + Integer.toString(chunk.getSize()) + " KB\n\t";
+		}
+		return ret;
+	}
+
+	public String getSpaceInfo() {
+		String ret = "\n";
+		
+		ret += "DISK INFO:\n\tTotal space: " + diskSpace + "\n\tUsed Space: " + usedSpace + "\n\tAvailable Space: "
+				+ "" + this.getAvailableDiskSpace(); 
+
+		return ret;
 	}
 }

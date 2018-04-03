@@ -94,6 +94,6 @@ public class PeerInfo {
 	}
 	
 	public String toString() {
-		return storage.getBackupFilesInfo() + storage.getStoredChunksInfo();
+		return storage.getBackupFilesInfo() + storage.getStoredChunksInfo() + storage.getSpaceInfo();
 	}
 }

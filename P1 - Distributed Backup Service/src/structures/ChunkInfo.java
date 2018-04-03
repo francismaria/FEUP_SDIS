@@ -26,4 +26,8 @@ public class ChunkInfo {
 	public byte[] getData() {
 		return data;
 	}
+	
+	public int getSize() {
+		return data.length/1024;
+	}
 }
