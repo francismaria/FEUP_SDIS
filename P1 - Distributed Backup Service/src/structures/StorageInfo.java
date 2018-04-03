@@ -202,4 +202,19 @@ public class StorageInfo {
 			return;
 		}
 	}
+
+	public String getBackupFilesInfo() {
+		String ret = "";
+		
+		for(FileInfo backup : backedUpFiles) {
+			ret += "File info:\n\tPathname: " + backup.getPath() + "\n\tDesired Replication Degree: "
+					+ "" + backup.getReplicationDegree() + "\n\tNumber of Chunks: " + backup.getNumberOfChunks();
+		}
+		
+		return ret;
+	}
+
+	public String getStoredChunksInfo() {
+		return "";
+	}
 }

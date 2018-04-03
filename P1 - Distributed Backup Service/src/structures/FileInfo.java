@@ -41,6 +41,10 @@ public class FileInfo {
 		return bytes;
 	}
 	
+	public int getReplicationDegree() {
+		return replicationDegree;
+	}
+	
 	@Override
 	public String toString() {
 		String ret = name + " " + path + " " + fileID + " " + bytes + " " + replicationDegree;

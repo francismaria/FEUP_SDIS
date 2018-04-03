@@ -84,11 +84,6 @@ public class PeerInfo {
 	public FileInfo getFileInfo(String filePath) {
 		return storage.getFileInfo(filePath);
 	}
-	
-	public String toString() {
-		
-		return "to String method";
-	}
 
 	public static ChunkInfo getDesiredChunk(String fileID, int chunkNo) {
 		return storage.getChunk(fileID, chunkNo);
@@ -96,5 +91,9 @@ public class PeerInfo {
 	
 	public static void restoreFile(String filePath, byte[] data) {
 		storage.restoreFile(filePath, data);
+	}
+	
+	public String toString() {
+		return storage.getBackupFilesInfo() + storage.getStoredChunksInfo();
 	}
 }

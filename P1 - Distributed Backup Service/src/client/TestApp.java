@@ -57,7 +57,8 @@ public class TestApp {
 			stub.reclaim(diskSpace);
 			break;
 		case "STATE":
-			stub.state();
+			String info = stub.state();
+			System.out.println(info);
 		default:
 			break;
 		}
