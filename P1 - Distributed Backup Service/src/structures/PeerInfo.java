@@ -93,4 +93,8 @@ public class PeerInfo {
 	public static ChunkInfo getDesiredChunk(String fileID, int chunkNo) {
 		return storage.getChunk(fileID, chunkNo);
 	}
+	
+	public static void restoreFile(String filePath, byte[] data) {
+		storage.restoreFile(filePath, data);
+	}
 }

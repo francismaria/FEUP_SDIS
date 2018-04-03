@@ -5,13 +5,17 @@ import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.List;
 
 import messages.ChunkMessage;
+import structures.ChunkInfo;
 import structures.PeerInfo;
 
 public class MDRchannel extends ChannelInformation implements Runnable{
 	
 	private static MulticastSocket socket;
+	private List<ChunkInfo> receivedChunks = new ArrayList<ChunkInfo>();
 	
 	private final static long MAX_MSG_SIZE = 65024;
 	
@@ -57,9 +61,12 @@ public class MDRchannel extends ChannelInformation implements Runnable{
 		ChunkMessage chunk = new ChunkMessage(messageLength);
 		chunk.parseMessage(message);
 		
-
-		System.out.println("LENGTH:  ------------" + messageLength);
-		System.out.println(chunk.getBody().length);
+		//if already has discard...
+		
+		
+		
+		ChunkInfo info = new ChunkInfo(chunk.getFileId(), chunk.getChunkNo(), chunk.getBody());
+		receivedChunks.add(info);
 	}
 	
 	public void joinChannel(InetAddress groupAddress, int port) {
@@ -73,4 +80,16 @@ public class MDRchannel extends ChannelInformation implements Runnable{
 			System.out.println("Unable to create a socket");
 		}
 	}
+	
+	public byte[] getChunkData(String fileID, int chunkNo) {
+		System.out.println("ENTROU");
+		for(ChunkInfo chunk : receivedChunks) {
+			System.out.println("CHUNK------ " + chunk.getFileId() + " " + chunk.getChunkNo());
+			if(chunk.getFileId().equals(fileID) && chunk.getChunkNo() == chunkNo) {
+				return chunk.getData();
+			}
+		}
+		return null;
+	}
+
 }

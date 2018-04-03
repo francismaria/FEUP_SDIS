@@ -77,4 +77,8 @@ public class ChunkMessage extends Message {
 	public byte[] getBody() {
 		return body;
 	}
+	
+	public int getChunkNo() {
+		return chunkNo;
+	}
 }

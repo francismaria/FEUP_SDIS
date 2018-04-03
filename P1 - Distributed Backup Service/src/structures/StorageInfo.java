@@ -185,4 +185,21 @@ public class StorageInfo {
 		}
 		return null;
 	}
+	
+	public void restoreFile(String filePath, byte[] data) {
+		
+		FileOutputStream stream;
+		try {
+			String path = filePath + ".jpg";
+			stream = new FileOutputStream(path);
+			stream.write(data);
+			stream.close();
+		} catch (FileNotFoundException e) {
+			System.out.println("An error ocurred with the path to the chunk location.");
+			return;
+		} catch (IOException e) {
+			System.out.println("Writing error");
+			return;
+		}
+	}
 }

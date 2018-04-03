@@ -15,6 +15,7 @@ public class Restore implements Runnable{
 	
 	private String fileName = null;
 	private PeerInfo peer = null;
+	private FileInfo fileInfo = null;
 	
 	private MDRchannel restoreChannel = null;
 	private MCchannel communicationChannel = null;
@@ -35,7 +36,7 @@ public class Restore implements Runnable{
 		
 		initSocket();
 		
-		FileInfo fileInfo = peer.getFileInfo(fileName);
+		fileInfo = peer.getFileInfo(fileName);
 		
 		if(fileInfo == null) {
 			System.out.println("It was not found file to backup.");
@@ -46,12 +47,37 @@ public class Restore implements Runnable{
 
 		while(i < numberOfChunks) {
 			
-			sendGetchunkRequest(fileInfo.getFileId(), i);
-			
-			//while(n tem resposta){ wait... }
-			
+			sendGetchunkRequest(fileInfo.getFileId(), i);	
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			i++;
 		}
+		
+		joinAllChunks(fileInfo.getFileId(), numberOfChunks);
+	}
+	
+	private void joinAllChunks(String fileID, int numberOfChunks) {
+		
+		byte[] file = new byte[2000000];
+		int lastPos = 0;
+		
+		for(int i = 0; i < numberOfChunks; i++) {
+			byte[] data = new byte[65024];
+			
+			data = restoreChannel.getChunkData(fileID, i);
+			if(data == null) continue;
+			
+			System.out.println(data.length +"asasdsfs");
+			
+			System.arraycopy(data, 0, file, lastPos, data.length);
+			lastPos += data.length;
+		}
+		
+		peer.restoreFile(fileInfo.getPath(), file);
 	}
 	
 	private void sendGetchunkRequest(String fileID, int chunkNo) {
