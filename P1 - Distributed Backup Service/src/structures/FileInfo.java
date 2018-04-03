@@ -43,10 +43,10 @@ public class FileInfo {
 	
 	@Override
 	public String toString() {
-		String ret = path + " " + fileID + " " + replicationDegree;
+		String ret = name + " " + path + " " + fileID + " " + bytes + " " + replicationDegree;
 		
 		for(BackupChunkInfo info : chunksInfo) {
-			ret += " " + info.toString();
+			ret += "\n" + info.toString();
 		}
 		
 		return ret;

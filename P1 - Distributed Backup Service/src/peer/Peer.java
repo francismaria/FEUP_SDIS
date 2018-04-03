@@ -1,12 +1,18 @@
 package peer;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.net.UnknownHostException;
 import java.rmi.AlreadyBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.ArrayList;
+import java.util.List;
 
 import communication.*;
 import exceptions.InvalidArgumentsException;
@@ -16,6 +22,8 @@ import protocol.Reclaim;
 import protocol.Restore;
 import protocol.State;
 import rmi.RMIinterface;
+import structures.BackupChunkInfo;
+import structures.FileInfo;
 import structures.PeerInfo;
 
 public class Peer implements RMIinterface{
@@ -45,6 +53,48 @@ public class Peer implements RMIinterface{
 	
 	public static void initBackupInfo() {
 		
+		String backupFolderPath = "/home/francisco/Desktop/Peer_" + info.getId() + "/BACKUP";
+		File backupFolder = new File(backupFolderPath);
+		
+		if(!backupFolder.isDirectory()) {
+			return;
+		}
+		
+		for(File fileEntry : backupFolder.listFiles()) {
+			
+			FileInfo infoFile = parseFile(fileEntry);
+
+			info.saveBackupInfo(infoFile);
+		}
+	}
+	
+	private static FileInfo parseFile(File file) {
+		try {
+			BufferedReader br = new BufferedReader(new FileReader(file));
+			String line = br.readLine();
+			String[] parsedFile = line.split(" ");
+			List<BackupChunkInfo> chunksInfo = new ArrayList<BackupChunkInfo>();
+			
+			while((line = br.readLine()) != null) {
+				if(line.equals("")) break;
+				String[] parsedChunkInfo = line.split(":");
+				int chunkNo = Integer.parseInt(parsedChunkInfo[0]);
+				int peersNo = Integer.parseInt(parsedChunkInfo[1]);
+				BackupChunkInfo info = new BackupChunkInfo(chunkNo, peersNo);
+				chunksInfo.add(info);
+			}
+			
+			FileInfo info = new FileInfo(parsedFile[0], parsedFile[1], parsedFile[2],
+					(long)Integer.parseInt(parsedFile[3]), Integer.parseInt(parsedFile[4]), chunksInfo);
+			
+			return info;
+		} catch (FileNotFoundException e) {
+			System.out.println("Unable to read from file");
+			return null;
+		} catch (IOException e) {
+			System.out.println("Error reading from buffered reader.");
+			return null;
+		}	
 	}
 	
 	public static boolean parseArguments(String[] args) {
