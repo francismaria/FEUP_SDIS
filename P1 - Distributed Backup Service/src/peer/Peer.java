@@ -53,7 +53,7 @@ public class Peer implements RMIinterface{
 	
 	public static void initBackupInfo() {
 		
-		String backupFolderPath = "/home/francisco/Desktop/Peer_" + info.getId() + "/BACKUP";
+		String backupFolderPath = "/tmp/Peer_" + info.getId() + "/BACKUP";
 		File backupFolder = new File(backupFolderPath);
 		
 		if(!backupFolder.isDirectory()) {
